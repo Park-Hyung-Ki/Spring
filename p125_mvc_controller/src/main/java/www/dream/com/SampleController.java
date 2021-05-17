@@ -88,7 +88,10 @@ public class SampleController {
 		// age = 26
 
 	}
-
+	
+	/**
+	 * Debugging용 GetMapping
+	 */
 	@GetMapping(value = "svo4")
 	public void basic4SVO4Debugging(SVO4Debugging obj) {
 		System.out.println(obj);
