@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="www.dream.com.party.persistence.PartyMapper"> <!-- PartyMapper에서 사용할 xml 경로 설정 -->
+	<resultMap type="www.dream.com.party.model.Admin" id="partyMap">
+		<id property="userId" column="user_id"></id>
+		<result property="userPwd" column="user_pwd"></result>
+		<result property="name" column="name"></result>
+		<result property="birthDate" column="birth_dt"></result>
+		<result property="isMale" column="sex"></result>
+		<result property="enabled" column="enabled"></result>
+		<result property="registrationDate" column="reg_dt"></result>
+		<result property="updateDate" column="upt_dt"></result>
+		<!-- 형식에 맞게끔 sql의 변수명과 Java에서의 변수명을 대치 -->
+	</resultMap>
+	<!-- public List<Party> getList(); -->
+	<select id="getList" resultMap="partyMap"> <!-- resultType -> resultMap으로 변경 Map을 사용할 것 -->
+	<![CDATA[
+	select * from s_party
+	]]> <!-- 새로운 형식의 쿼리를 집어넣어주고 -->
+	</select>
+</mapper>
