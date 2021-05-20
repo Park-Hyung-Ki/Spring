@@ -21,7 +21,11 @@
 	<!-- SqlSessionFactory -->
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dsHikariCP"></property>
+		
 	</bean>
+	<context:component-scan base-package="www.dream.com.party.service"/>
+	<!-- ↑ serivce Class를 만들면서 같ㅌ이 만들어 줘야함. -->
 	<mybatis-spring:scan base-package="www.dream.com.party.persistence"/>
+	 <mybatis-spring:scan base-package="www.dream.com.common.persistence"/>
 	
 </beans>

@@ -22,7 +22,8 @@
 	</beans:bean>
 	
 	<context:component-scan base-package="www.dream.com" />
-	
+	<context:component-scan base-package="www.dream.com.party.control"/>
+	<!-- 12. controller class를 만들었기에 선언 ↑ / 0520 -->
 	
 	
 </beans:beans>

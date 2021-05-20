@@ -25,11 +25,17 @@ public abstract class Party extends CommonMngVO { // 4. CommonMngVO를 상속받
 	private String userPwd;  // 암호, 암호화는 나중에
 	private String 	name;	 // User의 사람 이름
 	private Date 	birthDate;  // 생년월일
-	private boolean isMale;		// 성별
+	private boolean male;		// 성별
 	private boolean	enabled;	// 가입중, 탈퇴 시 false
 	
 	private List<ContactPoint> listContactPoint;
 	// 12. 11번과 이어지는 1:N 관계의 속성을 정의하기 위한 list Master_Detail. ContactPoint.java에 있는 11번 주석읽어볼 것
 
+	@Override
+	public String toString() {
+		return "Party [userId=" + userId + ", userPwd=" + userPwd + ", name=" + name + ", birthDate=" + birthDate
+				+ ", male=" + male + ", enabled=" + enabled + ", listContactPoint=" + listContactPoint
+				+ ", toString()=" + super.toString() + "]";
+	}
 
 }
