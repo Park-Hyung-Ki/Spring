@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<!-- Sql에 있는 Post Data를 가져 오기 위해서  -->
+	<!-- resultMap : DB Table 정의 내역과 객체 정의 내역에 있어 mismatch(부조화)가 있을 시 이를 연동, 
+		짝 지어주는 정보를 정의함 -->
+
+<mapper namespace="www.dream.com.bulletinBoard.persistence.PostMapper">
+	<resultMap type="www.dream.com.bulletinBoard.model.PostVO"	id="postMapper"
+		extends="www.dream.com.common.persistence.CommonMngVOMapper.CommonMngVOMap">
+	
+			<id property="id" column="id"></id>
+		<result property="title" column="title"></result>
+		<result property="content" column="content"></result>
+		<result property="readCnt" column="read_cnt"></result>
+		<result property="likeCnt" column="like_cnt"></result>
+		<result property="dislikeCnt" column="dislike_cnt"></result>
+		<!-- Master-Detail(1:N) 구조에서 Detail이 Master를 함께 join으로 읽어서 객체를 만들때 association tag 사용 -->
+		<association property="writer" columnPrefix="w_" 
+		resultMap="www.dream.com.party.persistence.PartyMapper.partyMap">
+  		</association>
+  		<!--columnprefix = w_로 시작하는것들을 만나면 Matching 시켜라  -->
+	</resultMap>
+	<!--public List<PostVO> getList(@Param("(boardId") int boardId); -->
+	<select id="getList" resultMap="postMapper"> 
+	<!--  Data Join 식 -->
+	<![CDATA[
+	select p.*, w.name w_name, w.descrim w_descrim	 
+	from s_post p, s_party w
+	where board_id = #{boardId}
+	and p.writer_id = w.user_id
+	]]>
+	</select>
+	
+	<!-- public PostVO findPostById(String id); -->
+	<select id="findPostById" resultMap="postMapper"> 
+	<![CDATA[ 
+	select p.*, w.name w_name, w.descrim w_descrim
+	  from s_post p, s_party w
+	 where p.id = #{id}
+	   and p.writer_id = w.user_id
+	]]>
+	</select>
+	<!--  public int insert(@Param("board") BoardVO board, @Param("post") PostVO post); param 안에 들어있는게 객체의 이름 -->
+	<!--  id는 함수의 이름, 그리고 table에 대한 insert into 구문을 만들어야한다. -->
+	<!--  default = 0 은 넣어줄 필요가 없다. -->
+	<insert id="insert" >
+		<selectKey keyProperty="post.id" order="BEFORE" resultType="string">
+			select get_id(seq_post_id.nextval) from dual 
+		</selectKey>
+		insert into s_post(id, board_id, writer_id, title, content)
+			values(#{post.id} ,
+			#{board.id}, #{post.writer.userId}, #{post.title}, #{post.content})
+	</insert>
+	
+	<!-- public int updatePost(PostVO post); -->
+	<update id="updatePost">
+		update s_post
+		set title = #{title},
+		content = #{content},
+		upt_dt = sysdate
+		where id=#{id}
+	</update>
+
+	<!-- public int deletePostById(String id); -->
+	<delete id="deletePostById">
+		delete from s_post where id = #{id}
+	</delete>
+	
+	
+</mapper>
