@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- Sql에 있는 Post Data를 가져 오기 위해서 -->
+<!-- resultMap : DB Table 정의 내역과 객체 정의 내역에 있어 mismatch(부조화)가 있을 시 이를 연동,짝 
+	지어주는 정보를 정의함 쉽게말하면 객체 만들어주려고 쓰는거, 만약 반환 Type이 확실하면 int, long resultType으로 
+	값을 준다. -->
+
+
+<mapper
+	namespace="www.dream.com.bulletinBoard.persistence.PostMapper">
+	<resultMap type="www.dream.com.bulletinBoard.model.PostVO"
+		id="postMapper"
+		extends="www.dream.com.common.persistence.CommonMngVOMapper.CommonMngVOMap">
+
+		<id property="id" column="id"></id>
+		<result property="title" column="title"></result>
+		<result property="content" column="content"></result>
+		<result property="readCnt" column="read_cnt"></result>
+		<result property="likeCnt" column="like_cnt"></result>
+		<result property="dislikeCnt" column="dislike_cnt"></result>
+		<!-- Master-Detail(1:N) 구조에서 Detail이 Master를 함께 join으로 읽어서 객체를 만들때 association 
+			tag 사용 -->
+		<association property="writer" columnPrefix="w_"
+			resultMap="www.dream.com.party.persistence.PartyMapper.partyMap">
+		</association>
+		<!--columnprefix = w_로 시작하는것들을 만나면 Matching 시켜라 -->
+	</resultMap>
+
+	<!-- public long getTotalCount(@Param("boardId") int boardId); -->
+	<select id="getTotalCount" resultType="_long">
+	<![CDATA[
+	select count(*)
+	  from s_post
+	 where board_id = #{boardId}
+	 ]]>
+	</select>
+
+
+
+	<!-- public List<PostVO> getList(@Param("boardId") int boardId, @Param("cri") 
+		Criteria cir); -->
+	<select id="getList" resultMap="postMapper">
+	<![CDATA[
+	select p.*, w.name w_name, w.descrim w_descrim	 
+	from(  
+	  select * 
+	    from s_post
+	   where board_id = #{boardId}
+	   order by id desc
+	   offset  (#{cri.pageNumber} - 1) * #{cri.amount}  rows fetch first #{cri.amount} rows only
+	 ) p, s_party w
+	where p.writer_id = w.user_id
+	]]>
+
+
+		<!-- Inline View로 먼저 만들어 줄건데 ()처리 출발점이 되는 요소 : s_post p 그리고 게시판마다의 번호가 
+			와야 하고 : where board_id = #{boardId} 1페이지당 10개의 게시글을 불러올 것이다. : #{cri.pageNumber}* 
+			#{cri.amount} 미리 sql에서 미리 만들어져있는, numberring 기능을 하는 rownum을 사용, DTO Class에서 
+			만든 요소를 가지고 올건데 private pageNumber와 amount Criteria Class에서 만든 객체명 fromUser. 
+			게시글 같은거는 최신으로 작성한것은 번호가 상대적으로 뒷 번호가 오기때문에 역순을 취해주는 : order by desc id가 게시글 
+			수를 판단할 수 있는 우리가 저장한 요소. : order by id desc 그리고 이제는 전체적인 부분에서부터 추출해야 하기에 :select 
+			p.*, rownum은 rn으로 받아주고 rownum rn 그리고 우리가 특정해서 보고싶은 부분이 있다. 예를들면 20~30번째 글이보고 
+			싶다면 앞서 만든 기준은 30번째 글, 그리고 만들어줘야 하는 부분은 20번째 부분을 참조 where rn > #({cri.pageNumber} 
+			- 1) * #{cri.amount} -->
+
+
+		<!-- 위의 getlist의 함수 원복 Code <![CDATA[ select p.*, w.name w_name, w.descrim 
+			w_descrim from( select p.*, rownum rn from s_post p where board_id = #{boardId} 
+			and rownum <= #{cri.pageNumber} * #{cri.amount} order by id desc ) p, s_party 
+			w where p.rn > (#{cri.pageNumber} - 1) * #{cri.amount} and p.writer_id = 
+			w.user_id ]]> -->
+
+	</select>
+
+	<!-- public PostVO findPostById(String id); -->
+	<select id="findPostById" resultMap="postMapper"> 
+	<![CDATA[ 
+	select p.*, w.name w_name, w.descrim w_descrim
+	  from s_post p, s_party w
+	 where p.id = #{id}
+	   and p.writer_id = w.user_id
+	]]>
+	</select>
+	<!-- public int insert(@Param("board") BoardVO board, @Param("post") PostVO 
+		post); param 안에 들어있는게 객체의 이름 -->
+	<!-- id는 함수의 이름, 그리고 table에 대한 insert into 구문을 만들어야한다. -->
+	<!-- default = 0 은 넣어줄 필요가 없다. -->
+	<insert id="insert">
+		<selectKey keyProperty="post.id" order="BEFORE"
+			resultType="string">
+			select get_id(seq_post_id.nextval) from dual
+		</selectKey>
+		insert into s_post(id, board_id, writer_id, title, content)
+		values(#{post.id}, #{board.id},
+		#{post.writer.userId}, #{post.title},
+		#{post.content})
+	</insert>
+
+	<!-- public int updatePost(PostVO post); -->
+	<update id="updatePost">
+		update s_post
+		set title = #{title},
+		content =
+		#{content},
+		upt_dt = sysdate
+		where id=#{id}
+	</update>
+
+	<!-- public int deletePostById(String id); -->
+	<delete id="deletePostById">
+		delete from s_post where id = #{id}
+	</delete>
+</mapper>
