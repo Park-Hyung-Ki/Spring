@@ -19,7 +19,7 @@ create table s_hashtag(
 -- hashtag가 primary key가 되어야 한다. // 근데 또 바뀌었음
 
 create unique index uidx_hashtag on s_hashtag(hashtag);
---↑ Drop하면 같이 사라짐
+--↑ Drop하면 같이 사라짐 , 단어 중복 방지 용도
 
 -- unique index = primary key 개념적으로는 봐도 동일.
  
@@ -34,6 +34,16 @@ create table sm_ht2post(
 );
 
 DB에 Query를 여러번 날리는것이 아닌 좋은 "성능"과 관계가 있다.
+
+--개인화 서비스, Personalization
+create table sm_ht2party(
+	hashtag_id			number(9),
+	user_id				varchar2(10),
+	occur_cnt			number(9),
+	--최종 검색 활용 시점 ↓
+	latest_use_time		timestamp		default sysdate not null,  
+	primary key(user_id, hashtag_id)
+)
 
 -- 배열 형 만들기
 drop TYPE int_id_array
