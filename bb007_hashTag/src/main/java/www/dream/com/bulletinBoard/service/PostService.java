@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -96,7 +97,15 @@ public class PostService {
 			 * setHT를 setExisting에 담아줌으로써, 해결
 			 * 새 단어를 단어집에 넣었으니 기존 단어가 되어버린것  */
 	}
-
+	
+	//06.04 검색기능을 추가한 화면을 만들기 위해서 새로운 기능 선언
+	public List<PostVO> getListByHashTag(int boardId, Criteria cri){
+		return postMapper.getListByHashTag(boardId, cri);
+	}
+	
+	public long  getSearchTotalCount(int boardId, Criteria cri) {
+		return postMapper.getSearchTotalCount(boardId, cri);
+	}
 
 	/** 게시글 수정 처리 */
 	// boolean은 if처리를 하기때문에 변경해준것

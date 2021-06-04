@@ -12,11 +12,15 @@ import www.dream.com.common.dto.Criteria;
 public interface PostMapper { // 추후 Data를 가져오기 위해서 Interface -> Mapper 생성
 	//LRCUD Data건수는 많으니까 long으로 int로 return하면 안됨
 	public long  getTotalCount(@Param("boardId") int boardId);
+	public long  getSearchTotalCount(@Param("boardId") int boardId, @Param("cri") Criteria cri);
 	
 	/* Mapper에 들어가는 인자의 개수가 여러 개 일때는 필수적으로 @Param을 넣어줘야 합니다.
 	 * 이를 실수하지 않기위하여 변수가 한 개여도 그냥 명시적으로 넣을 것 */
-	public List<PostVO> getList(@Param("boardId") int boardId, @Param("cri") Criteria cir); // 1. 새로운 함수 하나 만들어주기, PostMapper.xml 에서 Data 전달을 표현하기위한
+	public List<PostVO> getList(@Param("boardId") int boardId, @Param("cri") Criteria cri); // 1. 새로운 함수 하나 만들어주기, PostMapper.xml 에서 Data 전달을 표현하기위한
 	// xml에서 쓰이기 위해 @Param도 사용
+	
+	// 초기 화면 띄울때 활용 
+	public List<PostVO> getListByHashTag(@Param("boardId") int boardId, @Param("cri") Criteria cri);
 	
 	/** 게시글 등록 */
 	public int insert(@Param("board") BoardVO board, @Param("post") PostVO post);

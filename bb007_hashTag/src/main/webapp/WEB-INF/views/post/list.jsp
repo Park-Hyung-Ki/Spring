@@ -14,6 +14,17 @@
 			<h6 class="m-0 font-weight-bold text-primary">${boardName}글 목록</h6>
 		</div>
 		<div class="card-body">
+		<!-- Paging 이벤트에서 서버로 요청보낼 인자들을 관리합니다. -->
+			<form id='frmSearching' action='/post/listBySearch/' method='get'>
+			    <input type="text" name="searching" value='${pagination.searching}'>
+				<button id="btnSearch" class='btn btn-default'>검색</button>
+				<input type="hidden" name='boardId' value='${boardId}'>
+				<!-- Criteria.class와 짝지어진다.↑ value는 받은값으로 채워진다.-->
+				<input type="hidden" name='pageNumber'	value='${pagination.pageNumber}'>
+     			<input type="hidden" name='amount' value='${pagination.amount}'>
+				<!-- amount에 대한 정보 ↑  .... 보낼때 필요한 정보名명과 받을때 필요한 정보명들과 Matching-->
+			</form>
+
 			<button id="btnregisterPost">글쓰기</button>
 			<!-- 목록에서 버튼으로 가는 Btn -->
 
@@ -101,16 +112,6 @@
 </div>
 <!-- /.container-fluid -->
 
-<!-- frmPaging 이벤트에서 Server로 요청보낼 인자들을 관리합니다. 05.27作 -->
-<form id='frmPaging' action='/post/list/' method='get'>
-	<input type="hidden" name='boardId' value='${boardId}'>
-	<!-- Criteria.class와 짝지어진다.↑ value는 받은값으로 채워진다.-->
-	<input type="hidden" name='pageNumber' value='${pagination.pageNumber}'>
-	<input type="hidden" name='amount' value='${pagination.amount}'>
-	<!-- amount에 대한 정보 ↑  .... 보낼때 필요한 정보名명과 받을때 필요한 정보명들과 Matching-->
-</form>
-
-
 <%@include file="../includes/footer.jsp"%>
 <!-- End of Main Content -->
 <script type="text/javascript">
@@ -147,22 +148,38 @@
 		$("#myModal").modal("show");
 	}
 	
+	/*05.31 검색에 관한 처리 -> 06.04 frmPaging 기능 새로 작성하기*/
+	var frmSearching = $('#frmSearching');
+	$('#btnSearch').on('click', function(eInfo) {
+		eInfo.preventDefault();
+		
+		if ($('input[name="searching"]').val().trim() === '') {
+			alert('검색어를 입력하세요');
+			return;
+		}
+		
+		// 신규 조회 이므로 1쪽을 보여줘야 합니다.
+		$("input[name='pageNumber']").val("1");
+		
+		frmSearching.submit();
+	});
+	
 	/*Paging 처리에서 특정 쪽 번호를 클릭하였을때 해당 page의 정보를 조회하여 목록을 재출력 해줍니다. */
 	var frmPaging = $('#frmPaging');
 	$('.page-item a').on('click', function(eInfo) {
 		eInfo.preventDefault();
 		$("input[name='pageNumber']").val($(this).attr('href')); //여기 val이 중요하다. Click이 일어난 곳=this 거기가 href 처리해둔곳
-		frmPaging.submit();
+		frmSearching.submit();
 	});
 	
 	/* 05.28 특정 게시물에 대한 상세 조회 처리 */
 	$('.anchor4post').on('click', function(e) {
 		e.preventDefault();
 		var postId = $(this).attr('href')
-		frmPaging.append("<input name='postId' type='hidden' value='" + postId + "'>"); // 문자열을 끝내고 이어받아서 return값 호출
-		frmPaging.attr('action', '/post/readPost');
-		frmPaging.attr('method', 'get');
-		frmPaging.submit();
+		frmSearching.append("<input name='postId' type='hidden' value='" + postId + "'>"); // 문자열을 끝내고 이어받아서 return값 호출
+		frmSearching.attr('action', '/post/readPost');
+		frmSearching.attr('method', 'get');
+		frmSearching.submit();
 	});
 	
 });

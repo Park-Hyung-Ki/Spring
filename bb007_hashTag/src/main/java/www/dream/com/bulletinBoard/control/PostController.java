@@ -47,7 +47,8 @@ public class PostController {
 		// Home 화면에서 board 공지사항으로 바로 가기 위한 하나의 방법. 경로를 만들어 주기위한 기능을 정의하는 것이다.
 		//Test를 위해 Criteria Class에 만들어놨던 생성자들을 최종적으로 제거 
 		fromUser.setTotal(postService.getTotalCount(boardId));
-		model.addAttribute("pagination", fromUser); 
+		//model.addAttribute("pagination", fromUser); 
+		
 		/* 밑에 게시글 목록을 만들어낼 요소. 여기서 다시 계산을 해주는 부분이, 정말로 중요하다. 이 요소를 추가해줌으로써
 		 * 많은 오류들을 잘 처리하고있다.
 		 */
@@ -56,6 +57,21 @@ public class PostController {
 		 * 05.28 현상황에서의 문제는 startPage와 endPage가 10Page이후로 계산이 안되었다. Pagination을 하기위해서
 		 * 새롭게 객체 만든것을 활용(fromUser)
 		 */
+	}
+	
+	/*
+	 * 06.04 作
+	 */
+	@GetMapping(value = "listBySearch") // LCRUD 에서 L:list
+	public String listBySearch(@RequestParam("boardId") int boardId,
+			@ModelAttribute("pagination")  Criteria fromUser ,Model model) {
+		
+		model.addAttribute("listPost", postService.getListByHashTag(boardId, fromUser));
+		model.addAttribute("boardId", boardId);
+		model.addAttribute("boardName", boardService.getBoard(boardId).getName());
+		fromUser.setTotal(postService.getSearchTotalCount(boardId, fromUser));
+		//model.addAttribute("pagination", fromUser);
+		return "post/list";
 	}
 
 	@GetMapping(value = { "readPost", "modifyPost" }) // (value="readPost")가 바뀌었다. 여러개 호출하겠다고 value값을 조정

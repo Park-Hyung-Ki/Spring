@@ -14,7 +14,6 @@ import www.dream.com.common.model.CommonMngVO;
 import www.dream.com.framework.lengPosAnalyzer.HashTarget;
 @Data
 @NoArgsConstructor
-@HashTarget
 public abstract class Party extends CommonMngVO { // 4. CommonMngVO를 상속받는 Party 클래스를 만들기.
 	/*
 	private String user_id;	 // 로그인 ID

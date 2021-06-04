@@ -7,6 +7,10 @@ import lombok.Data;
 public class Criteria {
 	
 	private static final float PAGINATION_TOTAL = 10;
+	
+	/** 검색어 뭉치 "선수 재계약" */
+	private String searching; // Postmapper.xml에 추가해줄 검색 query의 시작 06.04
+	
 	private int pageNumber; // 현재 Page 번호
 	private int amount; // Page당 보여줄 Data 건 수 10개로 할 거임
 	
@@ -45,6 +49,10 @@ public class Criteria {
 		prev = startPage > 1;
 		next = endPage < realEnd;
 		
+		}
+	
+		public String[] getSearchingHashtags() {
+			return searching == null ? new String[] {} : searching.split(" ");
 		}
 	}
 

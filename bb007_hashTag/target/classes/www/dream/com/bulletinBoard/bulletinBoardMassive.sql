@@ -50,3 +50,19 @@ where rn > 10;
 -- () 감싸는것 자체가 하나의 name space이기 때문에 p는 겹치지 않는다.
 -- 근데 저 문제가 특정 수 대의 data를 찾고 싶으면, 그 수식을 직접 넣어야 한다.
 -- 당연히 뒤로 갈 수록 속도는 좀 느려지기 마련
+
+insert into sm_ht2post(hashtag_id, post_id, occur_cnt)
+select h.id, p.id, 1
+from s_hashtag h, s_post p
+where hashtag = '재계약'; -- 55번
+
+delete from sm_ht2post
+where hashtag_id = 55;
+
+select h.id, p.id, 1
+from s_hashtag h, s_post p
+where hashtag = '재계약';
+
+
+select id
+ from s_post;

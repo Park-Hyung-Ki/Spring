@@ -27,6 +27,7 @@ public class PostVO extends CommonMngVO{
 	private int likeCnt;  // 좋아요 수
 	private int dislikeCnt;  // 싫어요 수
 	
+	@HashTarget
 	private Party writer; // 객체 접근성 Party Class에 있는 writer 객체
 	
 	
