@@ -9,7 +9,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 @Retention(RUNTIME)
-@Target({ TYPE, FIELD, METHOD }) // TYPE이 있기때문에, Class위에 @를 달 수 있다. Class의 별칭이 Type이니까
+@Target({FIELD, METHOD }) // TYPE이 있기때문에, Class위에 @를 달 수 있다. Class의 별칭이 Type이니까
 public @interface HashTarget {
 
 }

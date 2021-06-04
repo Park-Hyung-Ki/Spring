@@ -5,10 +5,12 @@ import java.util.List;
 
 import www.dream.com.framework.lengPosAnalyzer.HashTarget;
 
-@HashTarget
 public class Party {
 	
-	private String name;
+	private String name; 
+	
+	@HashTarget
+	private List<ContactPoint> listContactPoint = new ArrayList<>();
 
 	@HashTarget // 이름은 고유명사 NNP이다.(KOMORAN 에서의 약속)
 	public String getName() {
@@ -19,8 +21,6 @@ public class Party {
 		this.name = name;
 	}
 	
-	@HashTarget
-	private List<ContactPoint> listContactPoint = new ArrayList<>();
 	
 	public void addCP(ContactPoint cp) {
 		listContactPoint.add(cp);

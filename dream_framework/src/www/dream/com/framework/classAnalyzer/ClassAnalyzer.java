@@ -8,6 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClassAnalyzer {
+	/**
+	 * 주어진 Class에서 정의되어 있는 모든 속성과 함수(기능)에 지정된 Annotation을 붙혀놓은 것들을
+	 * 상속 구조까지 분석하여 모아서 반환한다. 
+	 * @param targetClass
+	 * @param targetAnno
+	 * @return
+	 */
 
 	public static List<AccessibleObject> findFeatureByAnnotation(Class targetClass, Class targetAnno) {
 		//Return 하는 정보내용을 만들고, Catch 안에서 해결하려고 할필요 없고
@@ -20,7 +27,7 @@ public class ClassAnalyzer {
 	public static void findFeatureByAnnotation(Class targetClass, Class targetAnno,  List<AccessibleObject> list) {
 		// Private 함수를 만들어서 return 없이 위에서 만든 함수를 이 함수에 집어 넣어서 나오는 것들을 내가 받은곳에다가 계속 집어
 		// 넣을것
-		// 이렇게 해야 리컬전?을 개발하기가 쉽다.
+		// 이렇게 해야 Recursion을 개발하기가 쉽다.
 
 		try {
 			Field[] fields = targetClass.getDeclaredFields();

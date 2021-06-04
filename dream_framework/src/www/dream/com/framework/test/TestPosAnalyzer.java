@@ -1,5 +1,7 @@
 package www.dream.com.framework.test;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
@@ -31,6 +33,26 @@ public class TestPosAnalyzer {
 			System.out.println(k + " : " + map.get(k));
 		}
 	}
+	
+	@Test
+	public void testString() {
+		Map<String, Integer> map = PosAnalyzer.getHashTags("안녕하세요!, 이상덕 ");
+		for (String k : map.keySet()) {
+			System.out.println(k + " : " + map.get(k));
+		}
+	}
+	
+	@Test
+	public void testList() {
+		List<String> data = new ArrayList<>();
+		data.add("응애 애기");
+		data.add("쾌걸 이순신");
+		Map<String, Integer> map = PosAnalyzer.getHashTags(data);
+		for (String k : map.keySet()) {
+			System.out.println(k + " : " + map.get(k));
+		}
+	}
+	
 }
 // Map<String, Integer> hashList = PosAnalyzer.getHashTags(post); //
 // PosAnalyzer에게 post 객체를 던져주면 String의 출현 횟수가 나올것.
