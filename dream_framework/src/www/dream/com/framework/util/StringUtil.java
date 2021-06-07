@@ -26,4 +26,10 @@ public class StringUtil {
 			System.out.println(a);
 		}
 	}*/
+	
+	// 06.07 listBySearch 기능을 만들기 위한 초석 다지기 ↓
+	public static boolean hasInfo(String str) {
+		//
+		return str != null && !str.trim().isEmpty();
+	}
 }
