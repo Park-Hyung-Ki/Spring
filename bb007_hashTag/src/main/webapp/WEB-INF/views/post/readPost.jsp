@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ include file="../includes/header.jsp"%>
-
+ 
 <!-- Begin Page Content -->
 <div class="container-fluid">
 
@@ -22,6 +22,7 @@
 				<input type="hidden" id="postId" name="postId" value="${post.id}">
 				<input type="hidden" name="pageNumber" value="${pagination.pageNumber}">
 				<input type="hidden" name="amount" value="${pagination.amount}">
+				<input type="hidden" name="searching" value='${pagination.searching}'>
 			</form>
 			
 			<!--  
@@ -50,7 +51,7 @@ $(document).ready(function() {
 	
 	$("button[data-oper='list']").on("click", function() {
 		$("#frmOper").find("#postId").remove();
-		$("#frmOper").attr("action", "/post/list").submit();
+		$("#frmOper").attr("action", "/post/listBySearch").submit();
 	});
 });
 </script>

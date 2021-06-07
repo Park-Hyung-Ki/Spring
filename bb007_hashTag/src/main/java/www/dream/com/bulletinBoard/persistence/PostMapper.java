@@ -12,6 +12,7 @@ import www.dream.com.common.dto.Criteria;
 public interface PostMapper { // 추후 Data를 가져오기 위해서 Interface -> Mapper 생성
 	//LRCUD Data건수는 많으니까 long으로 int로 return하면 안됨
 	public long  getTotalCount(@Param("boardId") int boardId);
+	
 	public long  getSearchTotalCount(@Param("boardId") int boardId, @Param("cri") Criteria cri);
 	
 	/* Mapper에 들어가는 인자의 개수가 여러 개 일때는 필수적으로 @Param을 넣어줘야 합니다.

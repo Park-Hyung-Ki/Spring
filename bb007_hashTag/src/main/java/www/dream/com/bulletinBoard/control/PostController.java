@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import www.dream.com.bulletinBoard.model.BoardVO;
 import www.dream.com.bulletinBoard.model.PostVO;
@@ -20,7 +21,7 @@ import www.dream.com.party.model.User;
 
 //Post에 관한 Controller Class를 만들어 낼것. 0524 과정
 @Controller
-@RequestMapping("/post/*")
+@RequestMapping("/post/*") 
 public class PostController {
 	@Autowired
 	private PostService postService;
@@ -28,26 +29,29 @@ public class PostController {
 	@Autowired
 	private BoardService boardService;
 
+		
 	/* 특정 게시판에 등록되어 있는 게시글을 목록으로 조회하기 P.212 void :/post/list.jsp로 변함 */
-	@GetMapping(value = "list") // LCRUD 에서 L:list
-	public void listPost(@RequestParam("boardId") int boardId,
-			@ModelAttribute("pagination")  Criteria fromUser ,Model model) {
+	//@GetMapping(value = "list") // LCRUD 에서 L:list
+	//public void listPost(@RequestParam("boardId") int boardId,
+			//@ModelAttribute("pagination")  Criteria fromUser ,Model model) {
 		// Model 객체를 사용해서 jsp로 정보를 넘김
-		model.addAttribute("listPost", postService.getList(boardId, fromUser));
+		//model.addAttribute("listPost", postService.getList(boardId, fromUser));
 		/*
 		 * boardId를 집어넣으면 목록 정보가 나오겠지 보여줄 게시글 목록은 여기에서 완료
 		 */
-		model.addAttribute("boardId", boardId);
+		//model.addAttribute("boardId", boardId);
 		/* 밑에 redirect할때 특정 게시판이 살아있어야 removePost 운용이 가능해진다.
 		 boardId라는 속성값이 계속해서 따라다닌다. 막상 찾아보려고 하니, PostVO에는 정보값이 없고,
 		 readPost.jsp에도 값이 없다.
 		 그래서 목록조회를 할때 boardId를 넣어서 list.jsp에서 어떤 자리에서 boardId라는 정보를 넣어서 다음(readPost)으로
 		 전달이 될 수 있게끔*/
-		model.addAttribute("boardName", boardService.getBoard(boardId).getName());
+		//model.addAttribute("boardName", boardService.getBoard(boardId).getName());
 		// Home 화면에서 board 공지사항으로 바로 가기 위한 하나의 방법. 경로를 만들어 주기위한 기능을 정의하는 것이다.
 		//Test를 위해 Criteria Class에 만들어놨던 생성자들을 최종적으로 제거 
-		fromUser.setTotal(postService.getTotalCount(boardId));
-		//model.addAttribute("pagination", fromUser); 
+		//fromUser.setTotal(postService.getTotalCount(boardId)); 
+		//model.addAttribute("pagination", fromUser);
+		// ↑06.07 부로 list 부분은 더이상 사용하지 않음 
+		
 		
 		/* 밑에 게시글 목록을 만들어낼 요소. 여기서 다시 계산을 해주는 부분이, 정말로 중요하다. 이 요소를 추가해줌으로써
 		 * 많은 오류들을 잘 처리하고있다.
@@ -57,21 +61,20 @@ public class PostController {
 		 * 05.28 현상황에서의 문제는 startPage와 endPage가 10Page이후로 계산이 안되었다. Pagination을 하기위해서
 		 * 새롭게 객체 만든것을 활용(fromUser)
 		 */
-	}
+//	}
 	
 	/*
 	 * 06.04 作
 	 */
 	@GetMapping(value = "listBySearch") // LCRUD 에서 L:list
-	public String listBySearch(@RequestParam("boardId") int boardId,
+	public void listBySearch(@RequestParam("boardId") int boardId,
 			@ModelAttribute("pagination")  Criteria fromUser ,Model model) {
-		
 		model.addAttribute("listPost", postService.getListByHashTag(boardId, fromUser));
 		model.addAttribute("boardId", boardId);
 		model.addAttribute("boardName", boardService.getBoard(boardId).getName());
 		fromUser.setTotal(postService.getSearchTotalCount(boardId, fromUser));
 		//model.addAttribute("pagination", fromUser);
-		return "post/list";
+		// return 구문은 이제 없어졌다. void 형식으로 바뀌었기에 06.07
 	}
 
 	@GetMapping(value = { "readPost", "modifyPost" }) // (value="readPost")가 바뀌었다. 여러개 호출하겠다고 value값을 조정
@@ -109,7 +112,7 @@ public class PostController {
 		// 신규 게시글이 만들어 질때 select key를 이용하여 id가 만들어진다. PostMapper.xml에 id = "insert" 부분
 		rttr.addFlashAttribute("result", newPost.getId());
 
-		return "redirect:/post/list?boardId=" + boardId; // Redirect때문에 필요하다 Return 값이
+		return "redirect:/post/listBySearch?boardId=" + boardId; // Redirect때문에 필요하다 Return 값이
 
 		// 새로운 글을 등록하였을때 저장이 되게끔
 	}
@@ -123,10 +126,12 @@ public class PostController {
 			rttr.addFlashAttribute("result", "수정처리가 성공");
 			}
 		//수정 버튼을 눌렀을때, 수정한 게시글이 있던 곳으로 돌아옴, 1페이지로 초기화 안됨
-			rttr.addAttribute("boardId", boardId);
-			rttr.addAttribute("pageNumber",fromUser.getPageNumber());
-			rttr.addAttribute("amount",fromUser.getAmount());
-			return "redirect:/post/list";
+		
+			UriComponentsBuilder builder = UriComponentsBuilder.fromPath("");
+			builder.queryParam("boardId", boardId);
+			fromUser.appendQueryParam(builder);
+			// 게시글의 전체 내용이 바뀌기 보다는 조금의 내용이 바뀌는 것이 수정 행위의 일반적인 경향
+			return "redirect:/post/listBySearch" + builder.toUriString();
 		// 목록으로 다시 돌아가게끔, redirect 하기위해서 함수의 형도 void -> String으로 바꿔줘야한다.
 		// 그리고 수정처리 하는 기능은 modify.jsp 에서 만들어줘야 한다.
 	}
@@ -138,11 +143,11 @@ public class PostController {
 		if (postService.deletePostById(id)) { // postService Class를 호출 해줘야 한다.
 			rttr.addFlashAttribute("result", "삭제처리가 성공");
 			//삭제 버튼을 눌렀을때, 삭제한 게시글이 있던 곳으로 돌아옴, 1페이지로 초기화 안됨
-			rttr.addAttribute("boardId", boardId);
-			rttr.addAttribute("pageNumber",fromUser.getPageNumber());
-			rttr.addAttribute("amount",fromUser.getAmount());
 		}
-		return "redirect:/post/list";
+		UriComponentsBuilder builder = UriComponentsBuilder.fromPath("");
+		builder.queryParam("boardId", boardId);
+		fromUser.appendQueryParam(builder);
+		return "redirect:/post/listBySearch" + builder.toUriString();
 		// 내가 어떤 정보가 필요한데, 그 정보의 출발점은 어디며, 연동계통은 어디이며 그 정보를 살려내어서 이곳(removePost)까지 받아낼 것
 	}
 }

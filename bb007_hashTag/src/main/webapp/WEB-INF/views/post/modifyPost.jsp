@@ -6,7 +6,7 @@
 
 <!-- Begin Page Content -->
 <div class="container-fluid">
-
+ 
 	<!-- DataTales Example -->
 	<div class="card shadow mb-4">
 		<div class="card-body">
@@ -23,7 +23,10 @@
 				<input type="hidden" name="postId" value="${post.id}">
 				<input type="hidden" name="pageNumber" value="${pagination.pageNumber}">
 				<input type="hidden" name="amount" value="${pagination.amount}">
+				<input type="hidden" name="searching" value='${pagination.searching}'>
 				<!-- Criteria fromUser를 추가한 Data를 받아오기위해 두 개의 코드 추가 -->
+				<!-- HashTag에서는 앞선 Searching에서 사용한 요소인 keyword, type을 searching 하나로 대신함 06.07 -->
+				
 			</form>
 		</div>
 	</div>
@@ -56,14 +59,19 @@ $(document).ready(function() {
 			var pageNumber = $('input[name="pageNumber"]');
 			var amount = $('input[name="amount"]');
 			
+			var searching = $('input[name="searching"]');
+			
 			frmPost.attr("method", "get");
-			frmPost.attr('action', "/post/list");
+			frmPost.attr('action', "/post/listBySearch");
 			// ↑ web에서 목록으로 돌아가기 하는 부분
+			
 			frmPost.empty(); // $("#frmPost")를 비워내 버릴것
 			frmPost.append(boardIdInput);
 			// 수정에서 목록 버튼을 누르면, 다시 보고있던 목록 페이지로 돌아올 수 있게끔 값을 추가
 			frmPost.append(pageNumber);
 			frmPost.append(amount);
+			
+			frmPost.append(searching);
 		}
 		frmPost.submit();  // 이런식으로 해놔야 성능에서 문제가 크게 안생인다.
 	});

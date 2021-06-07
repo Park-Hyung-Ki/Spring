@@ -30,12 +30,23 @@ public class PostService {
 	@Autowired
 	private HashTagMapper hashTagMapper;
 
-	public long getTotalCount(int boardId) {
-		return postMapper.getTotalCount(boardId);
+	// 이전 버전에 있던 getTotalCount getList 함수는 더이상 사용하지 않음 06.07
+	
+	public List<PostVO> getListByHashTag(int boardId, Criteria cri){
+		if (cri.hasSearching()){
+			return postMapper.getListByHashTag(boardId, cri);
+		} else {
+			return postMapper.getList(boardId, cri);
+		}
 	}
-
-	public List<PostVO> getList(int boardId, Criteria cri){
-		return postMapper.getList(boardId, cri);
+	
+	public long  getSearchTotalCount(int boardId, Criteria cri) {
+		
+		if (cri.hasSearching()){
+			return postMapper.getSearchTotalCount(boardId, cri);
+		} else {
+			return postMapper.getTotalCount(boardId);
+		}
 	}
 
 	/** id 값으로 Post 객체 조회 */
@@ -99,14 +110,6 @@ public class PostService {
 	}
 	
 	//06.04 검색기능을 추가한 화면을 만들기 위해서 새로운 기능 선언
-	public List<PostVO> getListByHashTag(int boardId, Criteria cri){
-		return postMapper.getListByHashTag(boardId, cri);
-	}
-	
-	public long  getSearchTotalCount(int boardId, Criteria cri) {
-		return postMapper.getSearchTotalCount(boardId, cri);
-	}
-
 	/** 게시글 수정 처리 */
 	// boolean은 if처리를 하기때문에 변경해준것
 	public boolean updatePost(PostVO post) {
@@ -117,5 +120,4 @@ public class PostService {
 	public boolean deletePostById(String id) { // int -> boolean 변경 Redirect 하기위해서 
 		return postMapper.deletePostById(id) == 1; // == 1 추가
 	}
-
 }
