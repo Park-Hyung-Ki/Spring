@@ -2,13 +2,16 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%@include file="../includes/header.jsp"%>
+
 <%@ page import="www.dream.com.bulletinBoard.model.PostVO"%>
-<%@ page import="www.dream.com.framework.printer.TableHeader"%>
+<%@include file="../includes/header.jsp"%>
+
+<!--  TableHeader에 정의된 static method를 사용하기 위함 -->
+<jsp:useBean id="tablePrinter" class="www.dream.com.framework.printer.TablePrinter" />
+
 
 <!-- Begin Page Content -->
 <div class="container-fluid">
-
 
 
 	<!-- DataTales Example -->
@@ -17,43 +20,39 @@
 			<h6 class="m-0 font-weight-bold text-primary">${boardName}글 목록</h6>
 		</div>
 		<div class="card-body">
+		
 		<!-- Paging 이벤트에서 서버로 요청보낼 인자들을 관리합니다. -->
-			<form id='frmSearching' action='/post/listBySearch/' method='get'>
-						 
-			    <input type="text" name="searching" value='${pagination.searching}'>
-				<button id="btnSearch" class='btn btn-default'>검색</button>
-				<input type="hidden" name='boardId' value='${boardId}'>
-				<button id="btnregisterPost">글쓰기</button>
-				
-				<!-- Criteria.class와 짝지어진다.↑ value는 받은값으로 채워진다.-->
-				<input type="hidden" name='pageNumber'	value='${pagination.pageNumber}'>
-     			<input type="hidden" name='amount' value='${pagination.amount}'>
-				<!-- amount에 대한 정보 ↑  .... 보낼때 필요한 정보名명과 받을때 필요한 정보명들과 Matching-->
-			</form>
-			
-			<!-- 목록에서 버튼으로 가는 Btn -->
-
+	<form id="frmSearching" action="/post/listBySearch" method="get">
+			<input type="text" name='searching' value="${pagination.searching}">
+			<button id="btnSearch" class='btn btn-default'>검색</button>
+			<button id="btnRegisterPost">글쓰기</button>
+			<input type="hidden" name="boardId" value="${boardId}"> 
+			<input type="hidden" name="pageNumber" value="${pagination.pageNumber}">
+			<input type="hidden" name="amount" value="${pagination.amount}">
+	</form>
+		
 			<!--  <a href="/post/registerPost?boardId=${boardId}">글쓰기</a> -->
 			<!-- 글쓰기 Button ↑ 05.25作 -->
 
 			<!-- <input type="button" value="글쓰기" class="btn btn-primary"> ↑동일 표현 -->
 			<div class="table-responsive">
-				<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-					<thead>
-						<tr><%= TableHeader.print(PostVO.class) %></tr>
+				<table class="table table-bordered" id="dataTable" width="100%"
+					cellspacing="0">
+					<thead> 
+					<tr><%=tablePrinter.printHeader(PostVO.class)%></tr>
 					</thead>
 
 					<tbody>
 						<c:forEach items="${listPost}" var="post">
 							<tr>
-								<td>
+								${tablePrinter.printTableRow(post, "anchor4post")}
+								
+								<!--  td>
 									<a class='anchor4post' href="${post.id}">${post.title}</a>
-								<!-- 받아야할 변수가 여러개라서 class로 선언 -->
-								</td>
-									<td>${post.writer.name}</td>
-									<td>${post.readCnt}</td>
-									<td><fmt:formatDate pattern="yyyy-MM-dd" value="${post.updateDate}" />
-								</td>
+								<td>${post.writer.name}</td>
+								<td>${post.readCnt}</td>
+								<td><fmt:formatDate pattern="yyyy-MM-dd"
+										value="${post.updateDate}" /></td -->
 							</tr>
 						</c:forEach>
 					</tbody>
@@ -111,12 +110,13 @@
 </div>
 <!-- /.container-fluid -->
 
+
 <%@include file="../includes/footer.jsp"%>
 <!-- End of Main Content -->
 <script type="text/javascript">
 	$(document).ready(function() {
 	 // c에 들어있는 out tag를 활용, 저기 c는 제일 상단부에 taglib에 있음
-	$("#btnregisterPost").on("click", function() {
+	$("#btnRegisterPost").on("click", function() {
 		frmSearching.attr('action', '/post/registerPost');
 		frmSearching.submit();
 	});
@@ -157,7 +157,6 @@
 			alert('검색어를 입력하세요');
 			return;
 		}
-		
 		// 신규 조회 이므로 1쪽을 보여줘야 합니다.
 		$("input[name='pageNumber']").val("1");
 		
@@ -183,6 +182,7 @@
 	});
 	
 });
+	
 	<!-- Paging 처리 05.27 여기서의 clas="값"과 PostController.class에서 getlist model부분 마지막값이 같아야함-->
 </script>
 

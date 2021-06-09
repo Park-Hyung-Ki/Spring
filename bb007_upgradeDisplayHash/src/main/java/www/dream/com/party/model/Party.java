@@ -12,11 +12,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import www.dream.com.common.model.CommonMngVO;
 import www.dream.com.framework.lengPosAnalyzer.HashTarget;
-import www.dream.com.framework.printer.ClassHeaderTarget;
-import www.dream.com.framework.printer.HeaderTarget;
+import www.dream.com.framework.printer.ClassPrintTarget;
+import www.dream.com.framework.printer.PrintTarget;
 @Data
 @NoArgsConstructor
-@ClassHeaderTarget
+@ClassPrintTarget
 public abstract class Party extends CommonMngVO { // 4. CommonMngVO를 상속받는 Party 클래스를 만들기.
 	/*
 	private String user_id;	 // 로그인 ID
@@ -31,7 +31,7 @@ public abstract class Party extends CommonMngVO { // 4. CommonMngVO를 상속받
 	private String userId;	 // 로그인 ID
 	private String userPwd;  // 암호, 암호화는 나중에
 	@HashTarget 
-	@HeaderTarget(order=250, caption="닉네임")
+	@PrintTarget(order=250, caption="닉네임")
 	private String 	name;	 // User의 사람 이름
 	private Date 	birthDate;  // 생년월일
 	private boolean male;		// 성별
