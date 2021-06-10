@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import www.dream.com.bulletinBoard.model.BoardVO;
 import www.dream.com.bulletinBoard.model.PostVO;
-import www.dream.com.bulletinBoard.persistence.PostMapper;
+import www.dream.com.bulletinBoard.persistence.ReplyMapper;
 import www.dream.com.common.dto.Criteria;
 import www.dream.com.framework.lengPosAnalyzer.PosAnalyzer;
 import www.dream.com.framework.util.StringUtil;
@@ -23,9 +23,15 @@ import www.dream.com.hashTag.persistence.HashTagMapper;
 @Service // 2. 서비스 부분은 @Service 달기, 이건 Control또한 맟찬가지
 // 3. 그리고 root-context에 scan 부분 추가해주고
 // 4.  BoardVO에서 가져올 Board 목록을 보여주는getList 함수 작성
+/**
+ * 이는 ReplyVo와 PostVO의 Class 설계도를 기반으로 하는 것이며
+ * 해당 Table을 Top 전략으로 통합하여 만들었기에 
+ * ReplyMapper는 통합해 놓았다.
+ * 그리고 PostService를 ReplyService와 분리하고
+ */
 public class PostService {
 	@Autowired
-	private PostMapper postMapper;
+	private ReplyMapper postMapper;
 
 	@Autowired
 	private HashTagMapper hashTagMapper;
@@ -45,13 +51,14 @@ public class PostService {
 		if (cri.hasSearching()){
 			return postMapper.getSearchTotalCount(boardId, cri);
 		} else {
+			//return postMapper.getTotalCount(boardId, PostVO.DESCRIM4POST);
 			return postMapper.getTotalCount(boardId);
 		}
 	}
 
 	/** id 값으로 Post 객체 조회 */
 	public PostVO findPostById(String id) {
-		return postMapper.findPostById(id);
+		return (PostVO) postMapper.findReplyById(id);
 	}
 
 	public int insert(BoardVO board, PostVO post) {
@@ -118,6 +125,6 @@ public class PostService {
 
 	/** id 값으로 Post 객체 삭제 */
 	public boolean deletePostById(String id) { // int -> boolean 변경 Redirect 하기위해서 
-		return postMapper.deletePostById(id) == 1; // == 1 추가
+		return postMapper.deleteReplyById(id) == 1; // == 1 추가
 	}
 }

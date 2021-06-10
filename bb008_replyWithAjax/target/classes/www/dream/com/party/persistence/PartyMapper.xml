@@ -32,6 +32,7 @@
 			<case value="User" resultMap="userResultMap" />
 		</discriminator>
 	</resultMap>
+	
 	<resultMap type="www.dream.com.party.model.Admin"
 		id="adminResultMap" extends="partyMap">
 	</resultMap>

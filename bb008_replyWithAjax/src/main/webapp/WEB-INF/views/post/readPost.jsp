@@ -40,19 +40,20 @@
 <!-- End of Main Content -->
 <%@include file="../includes/footer.jsp"%>
 
-<script type="text/javascript">
+<script type="text/javascript" src="\resources\js\post\reply.js"> </script>
 
-$(document).ready(function() {
-	
-	//postCommon에 있는 함수를 부를 것
-	$("button[data-oper='modify']").on("click", function() {
-		$("#frmOper").submit();
+<script type="text/javascript">
+	$(document).ready(function() {
+		
+		//postCommon에 있는 함수를 부를 것
+		$("button[data-oper='modify']").on("click", function() {
+			$("#frmOper").submit();
+		});
+		
+		$("button[data-oper='list']").on("click", function() {
+			$("#frmOper").find("#postId").remove();
+			$("#frmOper").attr("action", "/post/listBySearch").submit();
+		});
 	});
-	
-	$("button[data-oper='list']").on("click", function() {
-		$("#frmOper").find("#postId").remove();
-		$("#frmOper").attr("action", "/post/listBySearch").submit();
-	});
-});
 </script>
 

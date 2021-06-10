@@ -31,7 +31,7 @@ public abstract class Party extends CommonMngVO { // 4. CommonMngVO를 상속받
 	private String userId;	 // 로그인 ID
 	private String userPwd;  // 암호, 암호화는 나중에
 	@HashTarget 
-	@PrintTarget(order=250, caption="닉네임")
+	@PrintTarget(order=250, caption="작성자")
 	private String 	name;	 // User의 사람 이름
 	private Date 	birthDate;  // 생년월일
 	private boolean male;		// 성별

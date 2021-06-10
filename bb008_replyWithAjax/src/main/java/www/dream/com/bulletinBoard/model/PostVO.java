@@ -18,10 +18,10 @@ import www.dream.com.party.model.Party;
 @NoArgsConstructor // 여기서도 생성자를 강제로 만들거기 때문에
 @ClassPrintTarget
 public class PostVO extends ReplyVO {
+	public static final String DESCRIM4POST = "post";
 
-	@HashTarget
+	@HashTarget @PrintTarget(order=100, caption="제목", withAnchor=true)
 	private String title;
-
 	private int readCnt;
 	private int likeCnt; // 좋아요 수
 	private int dislikeCnt; // 싫어요 수
