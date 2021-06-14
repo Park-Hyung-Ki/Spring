@@ -44,7 +44,7 @@ public interface ReplyMapper { // 추후 Data를 가져오기 위해서 Interfac
 	public List<ReplyVO> getReplyListWithPaging(@Param("originalId") String originalId,
 			@Param("idLength") int idLength, @Param("cri") Criteria cri);
 	/* Id값으로 Post객체 조회*/
-	public int insertReply(@Param("original") String originalId,@Param("reply") ReplyVO reply);
+	public int insertReply(@Param("originalId") String originalId,@Param("reply") ReplyVO reply); // js에서 original이였음
 	/* 댓글 수정 처리 */
 	public int updateReply(ReplyVO reply);
 }

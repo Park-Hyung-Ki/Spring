@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import www.dream.com.bulletinBoard.model.ReplyVO;
 import www.dream.com.bulletinBoard.service.ReplyService;
 import www.dream.com.common.dto.Criteria;
+import www.dream.com.party.model.Party;
+import www.dream.com.party.model.User;
 
 @RestController
 @RequestMapping("/replies/*")
@@ -28,7 +30,8 @@ public class ReplyController {
 
 	// LRCUD 순으로 배치
 	@GetMapping(value = "pages/{originalId}/{page}")
-	public ResponseEntity<List<ReplyVO>> getReplyListWithPaging(@PathVariable("originalId") String originalId,
+	public ResponseEntity<List<ReplyVO>> getReplyListWithPaging(
+			@PathVariable("originalId") String originalId,
 			@PathVariable("page") int page) {
 		Criteria cri = new Criteria();
 		cri.setPageNumber(page);
@@ -45,12 +48,14 @@ public class ReplyController {
 	@PostMapping(value = "new/{originalId}", consumes = "application/json", produces = { MediaType.TEXT_PLAIN_VALUE })
 	public ResponseEntity<String> insertReply(@PathVariable("originalId") String originalId,
 			@RequestBody ReplyVO reply) {
+		Party writer = new User("ghost");
+		reply.setWriter(writer);
+		
 		int insertCount = replyService.insertReply(originalId, reply);
 		if (insertCount == 1) {
 			return new ResponseEntity<>(reply.getId(), HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-
 		}
 	}
 	
@@ -67,7 +72,8 @@ public class ReplyController {
 		}
 	}
 	
-	@DeleteMapping(value = "{id}",produces = { MediaType.TEXT_PLAIN_VALUE })
+	@DeleteMapping(value = "{id}",
+			produces = { MediaType.TEXT_PLAIN_VALUE })
 	public ResponseEntity<String> deleteReplyById(@PathVariable("id") String id) {
 		int deleteCount = replyService.deleteReplyById(id);
 		if (deleteCount > 0) {

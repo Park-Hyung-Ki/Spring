@@ -189,12 +189,11 @@
 	
 	 <!-- public int insertReply(@Param("originalId") String original,@Param("reply") ReplyVO reply); -->
 	<insert id="insertReply">
-		<selectKey keyProperty="reply.id" order="BEFORE"
-			resultType="string">
+		<selectKey keyProperty="reply.id" order="BEFORE" resultType="String">
 			select #{originalId} || get_id(seq_reply_id.nextval) from dual
 		</selectKey>
 		insert into s_reply(id, writer_id, content, descrim)
-		values(#{reply.id},	#{reply.writer.userId},	#{reply.content}, #{reply.DESCRIM4REPLY})
+			values(#{reply.id},	#{reply.writer.userId},	#{reply.content}, #{reply.DESCRIM4REPLY})
 	</insert>
 	
 	<!-- public int updateReply(ReplyVO reply); -->
