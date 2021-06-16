@@ -59,24 +59,9 @@
 				</table>
 
 				<!-- Paging 처리 05.27 -->
+				<!-- EL로 처리, Criteria.java에 있음  -->
 				<div class='fa-pull-right'>
-					<ul id="ulPagination" class="pagination">
-						<c:if test="${pagination.prev}">
-							<li class="page-item previous"><a class='page-link'
-								href="${pagination.startPage - 1}">&lt;&lt;</a></li>
-						</c:if>
-						<c:forEach var="num" begin="${pagination.startPage}"
-							end="${pagination.endPage}">
-							<li
-								class='page-item ${pagination.pageNumber == num ? "active" : ""}'>
-								<a class='page-link' href="${num}">${num}</a>
-							</li>
-						</c:forEach>
-						<c:if test="${pagination.next}">
-							<li class="page-item next"><a class='page-link'
-								href="${pagination.endPage + 1}">&gt;&gt;</a></li>
-						</c:if>
-					</ul>
+				${pagination.pagingDiv}
 				</div>
 
 				<!-- Modal -->

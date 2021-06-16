@@ -2,6 +2,8 @@ package www.dream.com.common.dto;
 
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.Data;
 import www.dream.com.framework.util.StringUtil;
 
@@ -20,9 +22,15 @@ public class Criteria implements Comparable<Criteria>{
 	private int pageNumber; // 현재 Page 번호
 	private int amount; // Page당 보여줄 Data 건 수 10개로 할 거임
 	
-	private int startPage, endPage; // Web 하단에 출력되는 Page Num을 표시해주는 속성들을 만들어 낼 것
-	private boolean prev, next; // Page를 앞,뒤로 가기 활성화
-	
+	@JsonIgnoreProperties // JSON으로 Client에게 정보 전달시 필요가 없음을 지정한 것이며, 이는 통신 정보 크기 절감. 따라서 성능 향상이다.
+	private int startPage; // Web 하단에 출력되는 Page Num을 표시해주는 속성들을 만들어 낼 것
+	@JsonIgnoreProperties
+	private int endPage;
+	@JsonIgnoreProperties
+	private boolean prev;
+	@JsonIgnoreProperties
+	private boolean next; // Page를 앞,뒤로 가기 활성화
+	@JsonIgnoreProperties
 	private long total; // 전체 Data건 수
 	
 	public Criteria() { // Default 생성자도 만들어 줄 것
@@ -87,6 +95,37 @@ public class Criteria implements Comparable<Criteria>{
 			builder.queryParam("pageNumber", pageNumber)
 				   .queryParam("amount", amount)
 				   .queryParam("searching", searching);
+		}
+		
+	/*
+	 * 06.16 作
+	 * 모든 목록 페이지에서 페이징 처리용 HTML Tag들을 각자 출력하는 중복성을 제거하며
+	 * 이곳에서 통합적으로 서비스 할 수 있도록 모듈화 시켰다. 이로써 코드량의 절감, 유지보수성 향상
+	 */
+		
+		public String getPagingDiv() {
+			StringBuilder sb = new StringBuilder("<ul id='ulPagination' class='pagination'>");
+			
+			if (this.prev) {
+				sb.append("<li class='page-item previous'>");
+				sb.append("<a class='page-link' href='" + (this.startPage - 1) + "'>&lt;&lt;</a>");
+				sb.append("</li>");
+			}
+			
+			for (int num = this.startPage; num <= this.endPage; num++) {
+				sb.append("<li class='page-item " + (this.pageNumber == num ? "active" : "" ) + "'>"); 
+				sb.append("<a class='page-link' href=" + num + ">" + num + "</a>");
+				sb.append("</li>");
+			}
+			
+			if (this.next) {
+				sb.append("<li class='page-item next'>");
+				sb.append("<a class='page-link' href='" + (this) + "'>&gt;&gt;</a>");
+				sb.append("</li>");
+			}
+			sb.append("</ul>");
+			
+			return sb.toString();
 		}
 
 		@Override
