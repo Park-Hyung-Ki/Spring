@@ -6,6 +6,21 @@
 
 
 var replyService = (function() {
+	function getCountOfReply(replyId, successCallBack, errorCallBack) {
+		$.getJSON(
+			"/replies/count/" + replyId, 
+			function(cnt) {
+				if (successCallBack) {
+					successCallBack(cnt);
+				}
+			}
+		).fail(function(xhr, status, errMsg){
+			if (errorCallBack) {
+					errorCallBack(errMsg);
+				}
+			}	
+		);
+	}
 	
 	//  https://api.jquery.com/jquery.getjson/
 	function getList(orgIdAndPage, successCallBack, errorCallBack) { //댓글 목록을 불러오는 js
@@ -122,11 +137,12 @@ var replyService = (function() {
 	
 	//댓글 처리용 함수들
 	return {
-		getReplyList:getList,
-		getReplyListOfReply:getListOfReply,
-		getReply:get,
-		addReply:add,
-		updateReply:update,
-		removeReply:remove
+		getAllReplyCountOfReply : getCountOfReply, 
+		getReplyList : getList,
+		getReplyListOfReply : getListOfReply,
+		getReply : get,
+		addReply : add,
+		updateReply : update,
+		removeReply : remove
 		};
 })();

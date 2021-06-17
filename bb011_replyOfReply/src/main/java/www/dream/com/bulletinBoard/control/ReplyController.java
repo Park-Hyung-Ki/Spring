@@ -28,6 +28,13 @@ public class ReplyController {
 
 	@Autowired
 	private ReplyService replyService;
+	
+	//댓글Count하기
+	@GetMapping(value = "count/{replyId}") 
+	public ResponseEntity<Integer> getCountOfReply(@PathVariable("replyId") String replyId) {
+		
+		return new ResponseEntity<>(replyService.getAllReplyCount(replyId), HttpStatus.OK);
+	}
 
 	// LRCUD 순으로 배치
 	@GetMapping(value = "pages/{originalId}/{page}")
@@ -37,7 +44,8 @@ public class ReplyController {
 		Criteria cri = new Criteria();
 		cri.setPageNumber(page);
 		
-		ComparablePair<Criteria, List<ReplyVO>> listReplyWithCount = replyService.getReplyListWithPaging(originalId, cri);
+		ComparablePair<Criteria, List<ReplyVO>> listReplyWithCount 
+		= replyService.getReplyListWithPaging(originalId, cri);
 		return new ResponseEntity<>(listReplyWithCount, HttpStatus.OK);
 	}
 	

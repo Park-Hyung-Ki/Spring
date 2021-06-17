@@ -3,30 +3,30 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ include file="../includes/header.jsp"%>
- 
+
 <!-- Begin Page Content -->
-<div class="container-fluid">
-</div>	
-	<!-- DataTales Example -->
-	<div class="card shadow mb-4">
-		<div class="card-body">
-			<div class="form-group">
-				<%@ include file="./include/postCommon.jsp" %>
-				<!-- 공통적 속성인 실 내용들은 postCommon.jsp를 만들어서 보내버렸음 -->
-				
+<div class="container-fluid"></div>
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+	<div class="card-body">
+		<div class="form-group">
+			<%@ include file="./include/postCommon.jsp"%>
+			<!-- 공통적 속성인 실 내용들은 postCommon.jsp를 만들어서 보내버렸음 -->
+
 			<button data-oper='modify' class="btn btn-primary">수정</button>
-			<button data-oper='list' class="btn btn-secondary">목록</button>	
-							
+			<button data-oper='list' class="btn btn-secondary">목록</button>
+
 			<form id='frmOper' action="/post/modifyPost" method="get">
-				<input type="hidden" name="boardId" value="${boardId}">
-				<input type="hidden" id="postId" name="postId" value="${post.id}">
-				<input type="hidden" name="pageNumber" value="${pagination.pageNumber}">
-				<input type="hidden" name="amount" value="${pagination.amount}">
-				<input type="hidden" name="searching" value='${pagination.searching}'>
+				<input type="hidden" name="boardId" value="${boardId}"> <input
+					type="hidden" id="postId" name="postId" value="${post.id}">
+				<input type="hidden" name="pageNumber"
+					value="${pagination.pageNumber}"> <input type="hidden"
+					name="amount" value="${pagination.amount}"> <input
+					type="hidden" name="searching" value='${pagination.searching}'>
 			</form>
 		</div>
-		
-		<%@include file="./include/replyManagement.jsp" %>
+
+		<%@include file="./include/replyManagement.jsp"%>
 	</div>
 </div>
 <!-- /.container-fluid -->
@@ -47,5 +47,5 @@
 			$("#frmOper").attr("action", "/post/listBySearch").submit();
 		});
 	});
-</script>		
+</script>
 

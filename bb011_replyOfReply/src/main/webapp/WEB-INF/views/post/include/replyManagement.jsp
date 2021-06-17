@@ -1,6 +1,7 @@
 <!-- 게시글 상세화면(readPost.jsp)에서 이 모든 것이 들어가 있으면 너무 복잡해집니다.
 	 따라서 분할 정복으로 복잡도를 관리하자. 이는 유지보수성 향상으로 이어지는 것.  -->
-<%@ page language="java" contentType="text/html; charset=UTF-8"	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
@@ -8,45 +9,46 @@
 <div class="card-footer">
 	<div class="card-header">
 		댓글
-		<button id="btnOpenReplyModalForNew" class= "btn btn-primary btn-xs pull-right">댓글달기
-		</button>
+		<button id="btnOpenReplyModalForNew"
+			class="btn btn-primary btn-xs pull-right">댓글달기</button>
 	</div>
 	<div class="card-body">
-		<!-- 원글에 달린 갯글 목록 Paging으로 출력하기 -->
+		<!-- 원글에 달린 댓글 목록 Paging으로 출력하기 -->
 		<ul id="ulReply">
 		</ul>
 	</div>
 
-<!-- 페이징처리 -->
-<div id= "replyPaging" class='fa-pull-right'>
+	<!-- 페이징처리 -->
+	<div id="replyPaging" class='fa-pull-right'></div>
 </div>
-</div>
- 
- <!-- 댓글 입력 modal 창 -->
- <div id="modalReply" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+<!-- 댓글 입력 modal 창 -->
+<div id="modalReply" class="modal fade" tabindex="-1" role="dialog"
+	aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        		<h4 class="modal-title" id="myModalLabel">REPLY MODAL</h4>
+				<button type="button" class="close" data-dismiss="modal"
+					aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="myModalLabel">REPLY MODAL</h4>
 			</div>
 			<!-- End of modal-header -->
 			<div class="modal-body">
 				<div class="form-group">
-					<label>Reply</label> 
-					<input class="form-control" name='replyContent' value='New Reply'>
+					<label>Reply</label> <input class="form-control"
+						name='replyContent' value='New Reply'>
 				</div>
-				
+
 				<div class="form-group">
-					<label>작성자</label> 
-					<input class="form-control" name='replyer' value=''>
+					<label>작성자</label> <input class="form-control" name='replyer'
+						value=''>
 				</div>
-				
+
 				<div class="form-group">
-					<label>Reply Date</label> 
-					<input class="form-control" name='replyDate' value=''>
+					<label>Reply Date</label> <input class="form-control"
+						name='replyDate' value=''>
 				</div>
-				
+
 			</div>
 			<!-- End of modal-body -->
 			<div class="modal-footer">
@@ -54,14 +56,17 @@
 				<button id='btnRemoveReply' type="button" class="btn btn-danger">Remove</button>
 				<button id='btnRegisterReply' type="button" class="btn btn-primary">Register</button>
 				<button id='btnCloseModal' type="button" class="btn btn-default">Close</button>
-			</div>	<!-- End of modal-footer -->
-		</div>	<!-- End of modal-content -->
-	</div>	<!-- End of modal-dialog -->
+			</div>
+			<!-- End of modal-footer -->
+		</div>
+		<!-- End of modal-content -->
+	</div>
+	<!-- End of modal-dialog -->
 </div>
 <!-- End of 댓글 입력 모달창 -->
- 
-		
- 
+
+
+
 <script src="\resources\js\post\reply.js"></script>
 <script src="\resources\js\util\dateFormat.js"></script>
 
@@ -87,34 +92,7 @@
 				return;
 			}
 			// 정보가 있으면 li로 만들어서 ul에 담을것 
-				strLiTags = "";
-			
-				for (var i = 0, len = listReply.length || 0; i < len; i++){
-					strLiTags += '<li class="clearfix" data-reply_id = "' + listReply[i].id + '">';
-					strLiTags += '	<div>';
-					strLiTags += '		<div>';
-					if (listReply[i].replyCnt > 0) {
-						strLiTags += '		<i>[' + listReply[i].replyCnt + ']</i>';
-					}
-					strLiTags += '			<strong>' + listReply[i].writer.name + '</strong>';
-					strLiTags += '			<small>' + dateFormatService.getWhenPosted(listReply[i].updateDate) + '</small>';
-					strLiTags += ' 		<button class="btn btn-danger btn-xs pull-right"> 답글달기 </button>';
-					strLiTags += '		</div>';
-					strLiTags += '		<p>' + listReply[i].content + '</p>';
-					strLiTags += '	</div>';
-									/* 대댓글 전체 목록 삽입 장소
-									그 구성 형식은 댓글 깊이에 따라서 다음과 같음
-									<ul>
-										<li> 하하하하
-											<ul>
-												<li> 호호호호호</li>
-												<li> 호호호호호</li>
-											</ul>
-										</li>
-									</ul>
-									*/
-					strLiTags += '</li>';
-				}
+				strLiTags  = printReplyOfReplyByRecursion(listReply, false);// 함수의 재구조화
 				ulReply.html(strLiTags);
 			
 				replyPaging.html(criteria.pagingDiv);
@@ -122,7 +100,7 @@
 				alert("댓글 등록 오류 발생" + errMsg);
 			}
 		);
-	};
+	}
 	
 	//replyService 모듈
 	//javascript에서 객체 만드는 방법 {속성이름 : 값}
@@ -147,66 +125,54 @@
 		replyService.getReplyListOfReply(
 				reply_id,
 				
-				function(listReply) {
-					// 댓글이 있으면 li로 만들어서 ul에 담을 것
+				function(listReplyWithHierachy) {
+					//먼저 조회한 결과인 Ul은 청소하고, 댓글 내용만 기억시키자.
+					var ul = clickedLi.find("ul");
+					ul.remove();
 					strLiTags = clickedLi.html();
-					strLiTags  += printReplyOfReplyByRecursion(listReply, 0, true);
+					strLiTags  += printReplyOfReplyByRecursion(listReplyWithHierachy, true);
 					clickedLi.html(strLiTags);
-					
-				},function(errMsg){
-					alert("댓글 등록 오류 발생" + errMsg);
-				}
-			);
+						
+					},function(errMsg){
+						alert("댓글 등록 오류 발생" + errMsg);
+					}
+				);
 		});
-	/* 내것이 앞에 것 보다 깊으면 재귀호출하고 앞의 것의 닫기 tag를 완성
-	<ul>
-		<li>3 첫 대댓</li>
-		<li>3 둘째 대댓
-			<ul>
-				<li> 4 첫 대댓 </li>
-				<li> 4 첫 대댓 </li>
-			</ul>
-		</li>
-		<li>3 세 대댓</li>
-	</ul>
-	*/
-	
-	//Call By Value	
-	/* function printReplyOfReplyByRecursion(listReply, startIdx, startWithUl) {
-		var strLiTags = "";
-		if (startWithUl) {
-			strLiTags = '<ul>';
-		}
-		var prev = null;
-		for (var i = startIdx, len = listReply.length; i < len; i++) {
-			if (prev == null) {
-			strLiTags += '<li class="clearfix" data-reply_id = "' + listReply[i].id + '">';
-			prev = listReply[i];
 		
-				} else if ( prev.depth == listReply[i].depth) {
-					strLiTags += '</li>';
-					strLiTags += '<li class="clearfix" data-reply_id = "' + listReply[i].id + '">';
-					prev = listReply[i];
-					
-				} else if (prev.depth < listReply[i].depth) {
-					strLiTags += printReplyOfReplyByRecursion(listReply, i, true); 
-					prev = null;
-					
-				} else if (prev.depth > listReply[i].depth) {
-					strLiTags += '</li>';
-					strLiTags += '</ui>';
-					return strLiTags;
-				}
+	//재귀 함수(Recursion)를 이용한 대댓글 출력 
+	function printReplyOfReplyByRecursion(listReplyWithHierachy, wrapWithUl) {
+		var strRet = "";
+		if (wrapWithUl) { // 참인 경우
+			strRet = "<ul>";
+		}	
+		for (var i = 0, len = listReplyWithHierachy.length || 0; i < len; i++){
+			strRet += '<li class="clearfix" data-reply_id = "' + listReplyWithHierachy[i].id + '">';
+			strRet += '	<div>';
+			strRet += '		<div>';
+			if (listReplyWithHierachy[i].replyCnt > 0) { //있으면 출력하고 없으면 출력 시키지 않는다.
+				strRet += '		<i>[' + listReplyWithHierachy[i].replyCnt + ']</i>';
 			}
-			strLiTags += '</li>';
-			strLiTags += '</ui>';
-			return strLiTags;
-		}; */
-	
+			strRet += '			<strong>' + listReplyWithHierachy[i].writer.name + '</strong>';
+			strRet += '			<small>' + dateFormatService.getWhenPosted(listReplyWithHierachy[i].updateDate) + '</small>';
+			strRet += ' 		<button class="btn btn-danger btn-xs pull-right"> 답글달기 </button>';
+			strRet += '		</div>';
+			strRet += '		<p>' + listReplyWithHierachy[i].content + '</p>';
+			strRet += '	</div>';
+			if (listReplyWithHierachy[i].listReply.length != 0) {
+				strRet += printReplyOfReplyByRecursion(listReplyWithHierachy[i].listReply, true);
+			} 
+			strRet += '</li>';
+		}
+		if (wrapWithUl) { // 참이면 또 </ul> 마무리
+			strRet += "</ul>";
+		}	
+		return strRet;
+	}
 
 	//댓글 신규 용도의 모달 창 열기
 	$("#btnOpenReplyModalForNew").on("click", function(e) {
 		modalReply.data("original_id", postId);
+		modalReply.data("display_target", null);
 		showModalForCreate();					
 	});
 	
@@ -216,6 +182,10 @@
 	
 		var clickedLi = $(this).closest("li");
 		modalReply.data("original_id", clickedLi.data("reply_id"));
+		
+		//원글에 달려있는 댓글용 li 추가 버튼을 누른 대대댓글이 포함된 댓글을 찾아낼 것
+		modalReply.data("display_target", clickedLi.parents("#ulReply li").last());
+		
 		showModalForCreate();
 	});
 	
@@ -240,35 +210,37 @@
 	
 	// 목록에서 특정 댓글을 클릭하면 해당 댓글의 상세 정보를 Ajax-rest로 읽고 이를 Modal 창에 보여준다
 	// 특정 댓글은 동적으로 추가된 것이기에 이벤트 위임 방식을 활용하여야 한다. 
-	
-	ulReply.on("click", "li p", function(e) { // "li" 이벤트 위임 방식
+	// 댓글 수정을 하는 함수
+	ulReply.on("click", "li p", function(e) { // "li" 이벤트 위임 방식 p태그를 클릭을 하면
 		var clickedLi = $(this).closest("li");
-		  
+		
+		//원글에 달려있는 댓글용 li 추가 버튼을 누른 대대댓글이 포함된 댓글을 찾아낼 것
+		modalReply.data("display_target", clickedLi.parents("#ulReply li").last());
+	
 		replyService.getReply(
 				clickedLi.data("reply_id"),  //clickedLi의 data 이름은 data-reply_id 이다.
-				
-			function(replyObj) {
+				function(replyObj) {
 				//수정 또는 삭제 시 댓글의 ID가 필요합니다.
-				modalReply.data("reply_id", replyObj.id); // 댓글에 달린 Id의 객체가 없음 jsp에는, VO로부터 찾아서 가져와야함
-				inputReplyContent.val(replyObj.content);
-				inputReplyer.val(replyObj.writer.name);
-				inputReplyDate.val(dateFormatService.getWhenPosted(replyObj.updateDate));
-				
-				inputReplyer.attr("readonly", "readonly");
-				inputReplyDate.attr("readonly", "readonly");
-				
-				btnModifyReply.show();
-				btnRemoveReply.show();
-				btnRegisterReply.hide();
-				
-				modalReply.modal("show");
-			}, 
-			function(errMsg) {
+					modalReply.data("reply_id", replyObj.id); // 댓글에 달린 Id의 객체가 없음 jsp에는, VO로부터 찾아서 가져와야함
+					inputReplyContent.val(replyObj.content);
+					inputReplyer.val(replyObj.writer.name);
+					inputReplyDate.val(dateFormatService.getWhenPosted(replyObj.updateDate));
+					
+					inputReplyer.attr("readonly", "readonly");
+					inputReplyDate.attr("readonly", "readonly");
+					
+					btnModifyReply.show();
+					btnRemoveReply.show();
+					btnRegisterReply.hide();
+					
+					modalReply.modal("show");
+				}, 
+				function(errMsg) {
 				alert("댓글 상세 오류 : " + errMsg);
-			}
-		);
-	});
-	
+				}
+			);
+		});
+		
 	// 모달 창에서 내용을 사용자가 입력한 다음에 등록 버튼을 누르면 댓글로 등록하고 목록을 1쪽부터 다시 보여줌
 	btnRegisterReply.on("click", function(e) {
 		var reply = {
@@ -278,13 +250,14 @@
 		replyService.addReply(
 			modalReply.data("original_id"),
 			reply, 
-			function(newReplyId){
+		function(newReplyId) {
 				modalReply.find("input").val(""); //모든 Input 요소를 찾고, 빈 문자열로 채워줄 것 = 값 청소 
 				modalReply.modal("hide");
-				//등록 성공시 다시 1쪽부터 보여준다.
-				showReplyList(1);
-			},	function(errMsg){
-				alert("댓글 등록 오류 발생" + errMsg);
+				displayUpdatedContents(1);
+				// displayUpdatedContents 이 함수로 대댓글 작성시에 나타나는 Output에 대해 재구성및 공통화, 이부분만 Page처리에 예외를 주었음
+			},	
+			function(errMsg){
+			alert("댓글 등록 오류 발생" + errMsg);
 			}
 		);
 	});
@@ -292,7 +265,7 @@
 	/*댓글 상세 내용이 Modal 창에 나타났으며 작성자가 그 내용을 수정하고
 	수정 버튼을 누르면 DB에 내용을 반영하고 목록으로 돌아온다.  */
 	btnModifyReply.on("click", function(e) {
-		replyService.updateReply(
+		replyService.updateReply( // DB에 반영
 			{
 				id : modalReply.data("reply_id"),
 			 	content : inputReplyContent.val()
@@ -300,7 +273,9 @@
 			
 			function(resultMsg){
 				modalReply.modal("hide");
-				showReplyList(currentPageNum);
+				
+				//댓글을 수정한 경우와 대댓글을 수정한 경우로 나눠서 반응 시켜줘야 한다.
+				displayUpdatedContents(currentPageNum);
 			}, 
 			function(errMsg){
 				alert("댓글 수정 오류 : " + errMsg);
@@ -317,7 +292,9 @@
 			
 			function(delResult){
 				modalReply.modal("hide");
-				showReplyList(currentPageNum);
+				//댓글을 삭제한 경우와 대댓글을 삭제한 경우로 나눠서 작성해야합니다.
+				
+				displayUpdatedContents(currentPageNum);
 			}, 
 			function(errMsg){
 				alert("댓글 삭제 오류: " + errMsg);
@@ -325,14 +302,60 @@
 		);	
 	});
 	
+	function displayUpdatedContents(targetPage) {
+		
+		displayTargetLi = modalReply.data("display_target");
+		if (displayTargetLi == null) {
+			showReplyList(targetPage);
+			
+		} else {
+			var reply_id = $(displayTargetLi).data("reply_id"); // 댓글id와 댓글
+			
+			replyService.getReplyListOfReply(
+					reply_id,
+					
+					function(listReplyWithHierachy) {
+				
+				//먼저 조회한 결과인 Ul은 청소하고, 댓글 내용만 기억시키자.
+				var ul = $(displayTargetLi).find("ul");
+				ul.remove();
+				strLiTags = displayTargetLi.html();
+				strLiTags += printReplyOfReplyByRecursion(listReplyWithHierachy, true);
+				displayTargetLi.html(strLiTags);
+
+			}, function(errMsg) {
+
+				alert("댓글 조회 오류 발생" + errMsg);
+				}
+			);
+			
+	replyService.getAllReplyCountOfReply(
+			reply_id,
+			function(cnt) {
+				var iTagForCntDisplay = $(displayTargetLi).find("i");
+				var strongTagForCntDisplay = $(displayTargetLi).find("strong");
+				if (cnt == 0) {
+					if (iTagForCntDisplay != null)
+						$(iTagForCntDisplay).remove();
+				} else {
+					if (iTagForCntDisplay == null){
+						strongTagForCntDisplay.before("<i>[" + cnt + "]</i>");
+					} else {
+						iTagForCntDisplay.html("[" + cnt + "]");
+					}
+				}
+			}, function(errMsg) {
+				alert("댓글 개수 조회 오류 발생" + errMsg);
+			}
+		);
+	}
+}
 	//Paging 중 하나를 선택하면 해당 쪽의 댓글 목록을 조회하여 갱신한다.
-	
 	replyPaging.on("click", "li a", function(e) { // "li" 이벤트 위임 방식
 		e.preventDefault();
-	
+
 		var clickedAnchor = $(this);
 		currentPageNum = clickedAnchor.attr("href");
 		showReplyList(postId, currentPageNum);
- 	});
-	
+	});
 </script>

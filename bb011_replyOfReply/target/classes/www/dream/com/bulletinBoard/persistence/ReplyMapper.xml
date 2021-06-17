@@ -21,7 +21,7 @@
 		<association property="writer" columnPrefix="w_"
 			resultMap="www.dream.com.party.persistence.PartyMapper.partyMap">
 		</association>
-		
+		<!--  discriminator : 상속자, 판별자 -->
 		<discriminator javaType="String" column="descrim">
 			<case value="reply" resultMap="rmReply" />
 			<case value="post" resultMap="rmPost" />
@@ -177,6 +177,16 @@
 		   where id like #{originalId} || '%'
 		     and length(id) = #{idLength}
 	</sql>
+	
+	<!--public int getAllReplyCount(@Param("replyId") String replyId, @Param("idLength") int idLength);	 -->
+	
+			<select id="getAllReplyCount" resultType="_int">
+		  SELECT count(*)
+		  FROM s_reply
+		   where id like #{replyId} || '%'
+		     and length(id) = #{idLength}
+		  
+	</select>
 	
 	<!--public List<ReplyVO> getReplyCount(@Param("originalId") String originalId,
 			@Param("idLength") int idLength);  -->

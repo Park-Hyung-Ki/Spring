@@ -1,11 +1,11 @@
 package www.dream.com.bulletinBoard.service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import www.dream.com.bulletinBoard.model.ReplyVO;
 import www.dream.com.bulletinBoard.persistence.ReplyMapper;
@@ -20,7 +20,7 @@ import www.dream.com.framework.util.ComparablePair;
 public class ReplyService {
 	@Autowired
 	private ReplyMapper replyMapper;
-	
+
 	/* 댓글 목록 조회 */ // Criteria: 전체 개수 정보 , List<ReplyVO> : 해당 Page의 댓글 목록 정보 
 	public ComparablePair<Criteria, List<ReplyVO>> getReplyListWithPaging(String originalId,
 			Criteria cri) {
@@ -30,23 +30,23 @@ public class ReplyService {
 				replyMapper.getReplyListWithPaging(originalId, idLength, cri)); 
 		return ret;
 	}
-	
+
 	//Reply 목록안에 또다른 Reply가 들어가 있는 것
+	
+	public int getAllReplyCount(String replyId) {
+		int idLength = replyId.length() + ReplyVO.ID_LENGTH;
+		return replyMapper.getAllReplyCount(replyId, idLength);
+	}
+	
+	
 	public List<ReplyVO> getReplyListOfReply(String originalId) {
 		int idLength = originalId.length() + ReplyVO.ID_LENGTH;
 		List<ReplyVO> justRead =  replyMapper.getReplyListOfReply(originalId, idLength);
-		
-		Map<String, ReplyVO> map = new HashMap<>();
-		for (ReplyVO reply : justRead) {
-			map.put(reply.getId(),reply);
-			if (map.containsKey(reply.getOriginalId())) {
-				map.get(reply.getOriginalId()).getListReply().add(reply);
-			}
-		}
-		
-		return null;
+		//return justRead;
+		return ReplyVO.buildCompositeHierachy(justRead);
+		//정보 구조를 바꿔 재귀함수로 출력하는것보다 1차원적으로 읽어낸 것을 반복문으로 출력하는게 성능은 더 좋다.
 	}
-	
+
 	/* id로 찾기 */
 	public ReplyVO findReplyById(String id) { // 조회
 		return replyMapper.findReplyById(id);

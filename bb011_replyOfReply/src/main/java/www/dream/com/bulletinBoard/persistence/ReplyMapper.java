@@ -15,6 +15,7 @@ public interface ReplyMapper { // 추후 Data를 가져오기 위해서 Interfac
 	/**--------------------------- 게시글 처리 함수 정의 영역------------------------- */
 	/** public long  getTotalCount(@Param("boardId") int boardId, @Param("descrim") String descrim); */
 	public long  getTotalCount(@Param("boardId") int boardId);
+	
 	public long  getSearchTotalCount(@Param("boardId") int boardId, @Param("cri") Criteria cri);
 	
 	/* Mapper에 들어가는 인자의 개수가 여러 개 일때는 필수적으로 @Param을 넣어줘야 합니다.
@@ -42,6 +43,9 @@ public interface ReplyMapper { // 추후 Data를 가져오기 위해서 Interfac
 	
 	/**--------------------------- 댓글 처리 함수 정의 영역 06.10------------------------- */
 	
+	public int getAllReplyCount(@Param("replyId") String replyId,
+			@Param("idLength") int idLength);
+	
 	public int getReplyCount(@Param("originalId") String originalId,
 			@Param("idLength") int idLength);
 	
@@ -56,4 +60,5 @@ public interface ReplyMapper { // 추후 Data를 가져오기 위해서 Interfac
 	public int insertReply(@Param("originalId") String originalId,@Param("reply") ReplyVO reply); // js에서 original이였음
 	/* 댓글 수정 처리 */
 	public int updateReply(ReplyVO reply);
+	
 }
