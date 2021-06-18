@@ -184,7 +184,7 @@
 		  SELECT count(*)
 		  FROM s_reply
 		   where id like #{replyId} || '%'
-		     and length(id) = #{idLength}
+		     and length(id) >= #{idLength}
 		  
 	</select>
 	

@@ -33,7 +33,7 @@ public class ReplyController {
 	@GetMapping(value = "count/{replyId}") 
 	public ResponseEntity<Integer> getCountOfReply(@PathVariable("replyId") String replyId) {
 		
-		return new ResponseEntity<>(replyService.getAllReplyCount(replyId), HttpStatus.OK);
+		return new ResponseEntity<>(replyService.getCountOfReply(replyId), HttpStatus.OK);
 	}
 
 	// LRCUD 순으로 배치

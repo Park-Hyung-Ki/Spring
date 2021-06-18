@@ -184,7 +184,12 @@
 		modalReply.data("original_id", clickedLi.data("reply_id"));
 		
 		//원글에 달려있는 댓글용 li 추가 버튼을 누른 대대댓글이 포함된 댓글을 찾아낼 것
-		modalReply.data("display_target", clickedLi.parents("#ulReply li").last());
+		var grandFather = clickedLi.parents("#ulReply li").last();
+		if (grandFather.length == 0)
+			modalReply.data("display_target", clickedLi);
+		else 
+			modalReply.data("display_target", grandFather);
+			
 		
 		showModalForCreate();
 	});
@@ -329,16 +334,16 @@
 				}
 			);
 			
-	replyService.getAllReplyCountOfReply(
+		replyService.getAllReplyCountOfReply(
 			reply_id,
 			function(cnt) {
 				var iTagForCntDisplay = $(displayTargetLi).find("i");
 				var strongTagForCntDisplay = $(displayTargetLi).find("strong");
 				if (cnt == 0) {
-					if (iTagForCntDisplay != null)
+					if (iTagForCntDisplay.length != 0)
 						$(iTagForCntDisplay).remove();
 				} else {
-					if (iTagForCntDisplay == null){
+					if (iTagForCntDisplay.length == 0) {
 						strongTagForCntDisplay.before("<i>[" + cnt + "]</i>");
 					} else {
 						iTagForCntDisplay.html("[" + cnt + "]");

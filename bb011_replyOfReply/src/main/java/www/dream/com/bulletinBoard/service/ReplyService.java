@@ -33,7 +33,7 @@ public class ReplyService {
 
 	//Reply 목록안에 또다른 Reply가 들어가 있는 것
 	
-	public int getAllReplyCount(String replyId) {
+	public int getCountOfReply(String replyId) {
 		int idLength = replyId.length() + ReplyVO.ID_LENGTH;
 		return replyMapper.getAllReplyCount(replyId, idLength);
 	}
