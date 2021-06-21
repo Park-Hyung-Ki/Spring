@@ -192,6 +192,28 @@
     		<version>3.3.4</version>
 		</dependency>
 		
+		<!-- thumbnailator -->
+		
+		<!-- https://mvnrepository.com/artifact/net.coobird/thumbnailator -->
+	<dependency>
+	    <groupId>net.coobird</groupId>
+	    <artifactId>thumbnailator</artifactId>
+	    <version>0.4.14</version>
+	</dependency>
+	
+		<!-- https://mvnrepository.com/artifact/org.jcodec/jcodec -->
+	<dependency>
+	    <groupId>org.jcodec</groupId>
+	    <artifactId>jcodec</artifactId>
+	    <version>0.2.5</version>
+	</dependency>
+	
+		<!-- https://mvnrepository.com/artifact/org.jcodec/jcodec-javase -->
+	<dependency>
+	    <groupId>org.jcodec</groupId>
+	    <artifactId>jcodec-javase</artifactId>
+	    <version>0.2.5</version>
+	</dependency>
 
 		<!-- Test -->
 		<dependency>
