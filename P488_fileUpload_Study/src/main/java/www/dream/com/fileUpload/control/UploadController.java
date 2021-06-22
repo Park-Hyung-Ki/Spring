@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,6 +21,8 @@ import javax.imageio.ImageIO;
 import org.jcodec.api.FrameGrab;
 import org.jcodec.common.model.Picture;
 import org.jcodec.scale.AWTUtil;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,14 +31,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.google.gson.Gson;
+
 import net.coobird.thumbnailator.Thumbnailator;
 import www.dream.com.fileUpload.model.AttachFileVO;
 import www.dream.com.framework.util.FileUtil;
+import www.dream.com.framework.util.StringUtil;
 
 @Controller
 @RequestMapping("/uploadFiles/*")
@@ -67,8 +75,7 @@ public class UploadController {
 			//파일이름이 중복되더라도 Upload 할 수있는 UUID 라는 Library 앞에다가 임의의 숫자+영문 조합을 만들어냄 주소처럼
 			String uuid = UUID.randomUUID().toString();
 			attachFileVO.setUuid(uuid);
-			String pureSaveFileName = uuid + AttachFileVO.UUID_PURE_SEP + pureFilename;
-			attachFileVO.setPureSaveFileName(pureSaveFileName);
+			String pureSaveFileName = attachFileVO.getPureSaveFileName();
 			File save = new File(uploadPath, pureSaveFileName);
 			
 			try {
@@ -99,13 +106,64 @@ public class UploadController {
 		return res;
 	}
 	
+	/**
+	 * 
+	 * @param fileName C:\\uploadedFiles\2021\06\21\myfile.txt Full File Path 형식
+	 * @return
+	 */
+	@GetMapping(value = "download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE) // Byte 배열로 읽고 Return
+	@ResponseBody
+	public ResponseEntity<Resource> downloadFile(@RequestHeader("User-Agent") String userAgent,  @RequestParam("fileName") String fileName) {
+		Resource resource =  new FileSystemResource(fileName);
+		
+		if (! resource.exists()) {
+			return new ResponseEntity(HttpStatus.NOT_FOUND);
+		}
+		
+		String resourceFilename = AttachFileVO.filterPureFileName(resource.getFilename());
+		HttpHeaders headers = new HttpHeaders();
+		
+		try {
+			String downloadFileName = null;
+			if (userAgent.contains("Trident") || userAgent.contains("Edge")) {
+				downloadFileName = URLEncoder.encode(resourceFilename, "UTF-8");
+			} else {
+				downloadFileName = new String(resourceFilename.getBytes("UTF-8"), "ISO-8859-1");
+			}
+			headers.add("Content-Disposition", "attachment; filename=" + downloadFileName);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return new ResponseEntity(resource, headers, HttpStatus.OK);
+	}
+	
+	@PostMapping(value = "deleteFile")
+	@ResponseBody
+	public ResponseEntity<String> cancelAttatch(String delTarget) {
+		
+		try {
+			delTarget =  URLDecoder.decode(delTarget, "utf-8");
+			Gson gson = new Gson();
+			AttachFileVO attachVo = gson.fromJson(delTarget, AttachFileVO.class);
+			
+			File pureSaveFile = new File(attachVo.getSavedFolderPath(), attachVo.getPureSaveFileName());
+			pureSaveFile.delete();
+			if (StringUtil.hasInfo(attachVo.getPureThumbnailFileName())) {
+				new File(attachVo.getSavedFolderPath(), attachVo.getPureThumbnailFileName());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>("Delete Success", HttpStatus.OK);
+	}
+	
+	
 	//오늘 날짜에 활용할 폴더 이름을 주세요(Server에 들어있는 폴더이기에 Controller에서 개발)
 	private String getFolderName() {
 		SimpleDateFormat simpledf = new SimpleDateFormat("yyyy-MM-dd");
 		return simpledf.format(new Date()).replace('-', File.separatorChar); // 문자의 자료형으로 replace
 	}
 
-	
 	private void makeThumbnail(File uploadPath, File uploadedfile, String pureSaveFileName, AttachFileVO attachFileVO) {
 		MultimediaType multimediaType = MultimediaType.identifyMultimediaType(uploadedfile);
 		if (multimediaType == MultimediaType.image) {
@@ -143,6 +201,7 @@ public class UploadController {
 				e.printStackTrace();
 			} 
 		}
+		
 	}
 }
 
