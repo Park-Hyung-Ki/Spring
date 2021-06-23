@@ -43,3 +43,4 @@ var dateFormatService = (function() {
 		getWhenPosted:convertToWhen
 		};
 })();
+

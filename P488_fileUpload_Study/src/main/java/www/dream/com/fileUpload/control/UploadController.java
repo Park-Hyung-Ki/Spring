@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 
@@ -56,7 +57,7 @@ public class UploadController {
 	// http://localhost:8091/uploadFiles/uploadByAjax 주소
 	@PostMapping(value = "upload", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
-	public ResponseEntity<List<AttachFileVO>> uploadFilesByAjax(@RequestParam("uploadFile") MultipartFile[] uploadFiles) {
+	public ResponseEntity<List<String>> uploadFilesByAjax(@RequestParam("uploadFile") MultipartFile[] uploadFiles) {
 		List<AttachFileVO> listAttachFileVO = new ArrayList<>();
 		File uploadPath = new File(UPLOAD_FOLDER, getFolderName());
 								 	//출발점- 연결 - 마지막
@@ -88,7 +89,9 @@ public class UploadController {
 			listAttachFileVO.add(attachFileVO);
 		}
 		
-		return new ResponseEntity<>(listAttachFileVO, HttpStatus.OK);
+		List<String> ret = listAttachFileVO.stream().map(vo -> vo.getJson()).collect(Collectors.toList());
+		
+		return new ResponseEntity<>(ret, HttpStatus.OK);
 	}
 	
 	@GetMapping("display")

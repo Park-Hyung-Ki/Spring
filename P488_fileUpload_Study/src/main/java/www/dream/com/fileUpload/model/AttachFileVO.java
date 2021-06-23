@@ -44,28 +44,30 @@ public class AttachFileVO {
 		return pureSaveFileName;
 	}
 	
-	public String getOriginalFileCallPath() { 
-		UriComponentsBuilder builder = UriComponentsBuilder.fromPath("");
-		builder.queryParam("fileName", savedFolderPath + File.separator +  pureSaveFileName);
-		return builder.toUriString(); //?fileName=name~~~~ 이런 String이 만들어진다.   
-	}
+	@Expose
+	private String fileCallPath;
+	@Expose
+	private String originalFileCallPath;
 	
-	public String getFileCallPath() { //Page 528 varCallPath부분
-		UriComponentsBuilder builder = UriComponentsBuilder.fromPath("");
-		builder.queryParam("fileName", savedFolderPath + File.separator +  pureThumbnailFileName);
-		return builder.toUriString(); //?fileName=name~~~~ 이런 String이 만들어진다.   
-	}
 	
 	public String getJson() {
+		buildAuxInfo();
 		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-		String ret = gson.toJson(this);
+		String ret = "";
+		
 		try {
-			ret = URLEncoder.encode(ret, "UTF-8");
-			System.out.println(ret);
+			ret = URLEncoder.encode(gson.toJson(this), "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
+		return ret; 
+	}
+	
+		/** Client 에게 필요한 부가적인 정보 만들기 */
+	private void buildAuxInfo() { //Page 528 varCallPath부분
+		fileCallPath = savedFolderPath + File.separator + pureThumbnailFileName;
 		
-		return ret;
+		originalFileCallPath =  savedFolderPath + File.separator +  pureSaveFileName;
+		//?fileName=name~~~~ 이런 String이 만들어진다.
 	}
 }
