@@ -5,13 +5,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import www.dream.com.bulletinBoard.model.BoardVO;
 import www.dream.com.bulletinBoard.model.PostVO;
 import www.dream.com.bulletinBoard.persistence.ReplyMapper;
+import www.dream.com.common.attachFile.model.AttachFileVO;
+import www.dream.com.common.attachFile.persistence.AttachFileVOMapper;
 import www.dream.com.common.dto.Criteria;
 import www.dream.com.framework.lengPosAnalyzer.PosAnalyzer;
 import www.dream.com.framework.util.StringUtil;
@@ -35,6 +37,9 @@ public class PostService {
 
 	@Autowired
 	private HashTagMapper hashTagMapper;
+	
+	@Autowired
+	private AttachFileVOMapper attachFileVOMapper; 
 
 	// 이전 버전에 있던 getTotalCount getList 함수는 더이상 사용하지 않음 06.07
 	
@@ -60,7 +65,8 @@ public class PostService {
 	public PostVO findPostById(String id) {
 		return (PostVO) postMapper.findReplyById(id);
 	}
-
+	
+	@Transactional
 	public int insert(BoardVO board, PostVO post) {
 		int affectedRows = postMapper.insert(board, post); // 게시글 자체를 등록
 		Map<String, Integer> mapOccur = PosAnalyzer.getHashTags(post); // 06.01에 만든 PosAnalyzer FrameWork
@@ -68,6 +74,12 @@ public class PostService {
 		Set<String> setHashTag =  mapOccur.keySet(); // 단어 집합 자체를 등록
 		CreateHashTagAndMapping(post, mapOccur, setHashTag);
 		//최악을 고려해야 고품질의 코드를 만들어낼 수있다.
+		
+		// 첨부 파일 정보도 관리를 해야합니다. 高성능
+		List<AttachFileVO> listAttach = post.getListAttach();
+		if(listAttach != null && !listAttach.isEmpty()) {
+			attachFileVOMapper.insert(post.getId(), listAttach);
+		}
 		return affectedRows; 
 	}
 

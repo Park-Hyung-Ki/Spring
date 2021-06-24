@@ -41,18 +41,24 @@
 	<!-- ↑ serivce Class를 만들면서 같이 만들어 줘야함. -->
 	<context:component-scan
 		base-package="www.dream.com.bulletinBoard.service" />
+		
+	<context:component-scan
+		base-package="www.dream.com.common.attachFile.service" />
 	<!-- ↑ serivce Class를 만들때 같이 만들어 줘야함. -->
 	
 	<mybatis-spring:scan
 		base-package="www.dream.com.party.persistence" />
 	<mybatis-spring:scan
 		base-package="www.dream.com.common.persistence" />
+		
+	<mybatis-spring:scan
+		base-package="www.dream.com.common.attachFile.persistence" />
 	<mybatis-spring:scan
 		base-package="www.dream.com.bulletinBoard.persistence" />
 	<mybatis-spring:scan
 		base-package="www.dream.com.hashTag.persistence" />	
 	<mybatis-spring:scan
 		base-package="www.dream.com.selectKey.persistence" />
-	
+					
 	<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
 </beans>

@@ -38,7 +38,7 @@
 		<result property="likeCnt" column="like_cnt"></result>
 		<result property="dislikeCnt" column="dislike_cnt"></result>
 		<collection property="listAttach" columnPrefix="af_" 
-		resultMap="www.dream.com.common.persistence.AttachFileVOMapper.rmAttachFileVOMap">
+			resultMap="www.dream.com.common.attachFile.persistence.AttachFileVOMapper.rmAttachFileVO">
 		</collection>	
 		<!-- Master-Detail(1:N) 구조에서 Detail이 Master를 함께 join으로 읽어서 객체를 만들때 association 
 			tag 사용 -->
@@ -157,7 +157,8 @@
 	게시글 상세 및 댓글 상세조회가 통합으로 서비스 되고 있습니다. -->
 	<select id="findReplyById" resultMap="rmReply"> 
 	<![CDATA[ 
-		select p.*, w.name w_name, w.descrim w_descrim, af.uuid af_uuid,
+		select p.*, w.name w_name, w.descrim w_descrim,
+		af.uuid af_uuid,
 		af.saved_folder_path af_saved_folder_path, af.pure_file_name af_pure_file_name,
 		af.multimedia_type af_multimedia_type		
 		  from s_reply p

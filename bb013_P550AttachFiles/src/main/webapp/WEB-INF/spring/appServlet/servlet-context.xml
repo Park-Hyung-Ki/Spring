@@ -26,6 +26,7 @@
 	<!-- 12. controller class를 만들었기에 선언 ↑ / 0520 -->
 	<context:component-scan base-package="www.dream.com.bulletinBoard.control" />
 	<context:component-scan base-package="www.dream.com.restStudy.control" />
+	<context:component-scan base-package="www.dream.com.common.attachFile.control" />
 	
 	<!-- <context:component-scan base-package="www.dream.com.fileUpload.control" /> -->
 	

@@ -40,7 +40,7 @@
 	</servlet-mapping>
 	
 	<!-- Post방식 한글 Data 전달 깨지는거 변환 해주는 Filter -->
-	<filter> 
+<filter> 
     <filter-name>encodingFilter</filter-name> 
     <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class> 
     <init-param> 

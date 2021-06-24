@@ -19,11 +19,13 @@
 			<form id='frmOper' action="/post/modifyPost" method="get">
 				<input type="hidden" name="boardId" value="${boardId}"> <input
 					type="hidden" id="postId" name="postId" value="${post.id}">
-				<input type="hidden" name="pageNumber"
-					value="${pagination.pageNumber}"> <input type="hidden"
+				<input type="hidden" name="pageNumber" value="${pagination.pageNumber}"> <input type="hidden"
 					name="amount" value="${pagination.amount}"> <input
 					type="hidden" name="searching" value='${pagination.searching}'>
 			</form>
+			
+			<%@include file="../common/attachFileManagement.jsp"%>
+			
 		</div>
 
 		<%@include file="./include/replyManagement.jsp"%>
@@ -36,6 +38,7 @@
 
 <script>
 	$(document).ready(function() {
+		showUploadedFile(${post.attachList});
 		
 		//postCommon에 있는 함수를 부를 것
 		$("button[data-oper='modify']").on("click", function() {
