@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<style>
+<style type="text/css">
 #uploadResult {	width: 100%; background-color: gray}
 #uploadResult ul{ display:flex; flex-flow: row; justify-content: center; align-items: center;}
 #uploadResult ul li {list-style:none; padding: 10px; align-content: center; text-align: center;}

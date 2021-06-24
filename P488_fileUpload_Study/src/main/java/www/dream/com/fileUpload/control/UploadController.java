@@ -142,17 +142,14 @@ public class UploadController {
 	
 	@PostMapping(value = "deleteFile")
 	@ResponseBody
-	public ResponseEntity<String> cancelAttatch(String delTarget) {
+	public ResponseEntity<String> cancelAttatch(AttachFileVO attachVo) {
 		
 		try {
-			delTarget =  URLDecoder.decode(delTarget, "utf-8");
-			Gson gson = new Gson();
-			AttachFileVO attachVo = gson.fromJson(delTarget, AttachFileVO.class);
 			
 			File pureSaveFile = new File(attachVo.getSavedFolderPath(), attachVo.getPureSaveFileName());
 			pureSaveFile.delete();
 			if (StringUtil.hasInfo(attachVo.getPureThumbnailFileName())) {
-				new File(attachVo.getSavedFolderPath(), attachVo.getPureThumbnailFileName());
+				new File(attachVo.getSavedFolderPath(), attachVo.getPureThumbnailFileName()).delete();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
