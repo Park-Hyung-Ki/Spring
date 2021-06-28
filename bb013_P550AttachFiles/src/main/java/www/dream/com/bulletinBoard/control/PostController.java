@@ -104,6 +104,7 @@ public class PostController {
 	@PostMapping(value = "registerPost") // LCRUD 에서 Update 부분
 	public String registerPost(@RequestParam("boardId") int boardId,
 		PostVO newPost, RedirectAttributes rttr) {
+		newPost.parseAttachInfo();
 		BoardVO board = new BoardVO(boardId);
 		Party writer = new User("hong");
 		newPost.setWriter(writer);

@@ -36,9 +36,13 @@
 <!-- End of Main Content -->
 <%@include file="../includes/footer.jsp"%>
 
-<script>
+<script type="text/javascript"> // El에 JSP가 만들어져야 돌아감 ↓
 	$(document).ready(function() {
-		showUploadedFile(${post.attachList});
+		<c:forEach var="attachVoInStr" items="${post.attachListInGson}" >
+			appendUploadUl(<c:out value="${attachVoInStr}" />);
+		</c:forEach>
+		
+		//EL이 표현한 LIST 출력 양식, 그래서 첨부파일이 안보임, El은 Server에서 돌아감
 		
 		//postCommon에 있는 함수를 부를 것
 		$("button[data-oper='modify']").on("click", function() {
@@ -48,7 +52,7 @@
 		$("button[data-oper='list']").on("click", function() {
 			$("#frmOper").find("#postId").remove();
 			$("#frmOper").attr("action", "/post/listBySearch").submit();
-		});
 	});
+});
 </script>
 
