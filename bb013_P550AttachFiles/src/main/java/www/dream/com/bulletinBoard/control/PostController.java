@@ -123,6 +123,7 @@ public class PostController {
 	public String openModifyPost(@RequestParam("boardId") int boardId, PostVO modifiedPost,
 			RedirectAttributes rttr, Criteria fromUser) {
 		// 화면에서 정보가 들어온다고 하자 boardId는 가교 역할, 그리고 밑에 오는 객체들이 정보 덩어리이다.
+		modifiedPost.parseAttachInfo(); // 수정했을시에 파일이 삭제 되는것을 방지
 		if (postService.updatePost(modifiedPost)) {
 			rttr.addFlashAttribute("result", "수정처리가 성공");
 			}

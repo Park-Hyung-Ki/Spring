@@ -11,9 +11,7 @@
 	<!-- DataTales Example -->
 	<div class="card shadow mb-4">
 		<div class="card-body">
-
 				<form id="frmPost" method="post" action="/post/registerPost">
-				
 				<%@ include file="./include/postCommon.jsp" %>
 				
 				<button id="btnRegisterPost" type="submit" class="btn btn-primary">등록</button>
@@ -35,6 +33,7 @@
 <script type="text/javascript">
 $(document).ready(function() {
 	controlInput('신규');
+	adjustCRUDAtAttach('신규');
 	
 	var frmPost = $("#frmPost");
 	

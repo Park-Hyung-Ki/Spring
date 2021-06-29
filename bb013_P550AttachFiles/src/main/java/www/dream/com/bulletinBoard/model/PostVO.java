@@ -49,13 +49,11 @@ public class PostVO extends ReplyVO {
 		ret.addAll(listAttach.stream().map(vo -> vo.getJson()).collect(Collectors.toList()));
 		return ret;
 	}
-	
 
 	public void parseAttachInfo() {
 		if (listAttach == null) {
 			listAttach = new ArrayList<>();
 		}
-		
 		for (String ai : listAttachInStringFormat) {
 			listAttach.add(AttachFileVO.fromJson(ai));
 		}

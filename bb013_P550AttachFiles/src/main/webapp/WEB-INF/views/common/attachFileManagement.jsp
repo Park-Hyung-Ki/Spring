@@ -46,6 +46,19 @@
 <script src="\resources\js\util\utf8.js"></script>
 
 <script type="text/javascript">
+var updateMode;
+
+function adjustCRUDAtAttach(includer) {
+	
+	if (includer === '수정' || includer === '신규') {
+		updateMode = true;
+		$('#uploadDiv').show();
+	} else if  (includer === '조회') {
+		updateMode = false;
+		$('#uploadDiv').hide();
+	}
+}
+
 function appendUploadUl(attachVoInJson) {
 	var liTags = "";
 	var attachVo = JSON.parse(decodeURL(attachVoInJson));
@@ -53,22 +66,32 @@ function appendUploadUl(attachVoInJson) {
 	if (attachVo.multimediaType === "others") {
 		liTags += "<li data-attach_info=" + attachVoInJson + "><a href='/uploadFiles/download?fileName=" 
 			+ encodeURIComponent(attachVo.originalFileCallPath) + "'><img src='/resources/img/attachfileicon.png'>" 
-			+ attachVo.pureFileName + "</a><span>X</span></li>";
+			+ attachVo.pureFileName + "</a>";
+			if(updateMode) {
+				liTags += "<span>X</span>";
+			}
+			liTags += "</li>";
 	} else {
 		if (attachVo.multimediaType === "audio") {
 			liTags += "<li data-attach_info=" + attachVoInJson + ">"
 					+ "<a>"
 					+ "<img src='/resources/img/speaker.png'>" 
-					+ attachVo.pureFileName + "</a>" 
-					+ "<span>X</span>" 
-					+ "</li>";
+					+ attachVo.pureFileName + "</a>"; 
+					if(updateMode) {
+						liTags += "<span>X</span>";
+					}
+					liTags += "</li>";
+					
 		} else if (attachVo.multimediaType === "image" || attachVo.multimediaType === "video") {
 			liTags += "<li data-attach_info=" + attachVoInJson + ">"
 					+ "<a>"
 					+ "<img src='/uploadFiles/display?fileName=" 
-					+ encodeURIComponent(attachVo.fileCallPath) + "'>" + attachVo.pureFileName + "</a>" 
-					+ "<span>X</span>"
-					+ "</li>";
+					+ encodeURIComponent(attachVo.fileCallPath) + "'>"
+					+ attachVo.pureFileName + "</a>"; 
+					if(updateMode) {
+						liTags += "<span>X</span>";
+					}
+					liTags += "</li>";
 			} 	  
 		}
 	
@@ -181,7 +204,6 @@ function addAttachInfo(frmContainer, varName) {
 	var inputAttaches = "";
 	$("#uploadResult ul li").each(function(i, attachLi){
 		var jobObj = $(attachLi);
-		
 		var attachVO = jobObj.data("attach_info");
 		
 		inputAttaches += "<input type='hidden' name='" + varName + "[" + i + "]' value=" + attachVO + ">";

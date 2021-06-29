@@ -116,8 +116,7 @@ public class PostService {
 			hashTagMapper.createHashTag(setHT); // HashTag단어집에 이제, 신규 단어집이 들어간 것
 
 			setExisting.addAll(setHT); 
-		}
-			
+			}
 			hashTagMapper.insertMapBetweenPost(setExisting, post.getId()); //새로 들어간 단어집과, 기존의 단어집들간의
 			
 			/* hashTagMapper.insertMapBetweenPost(setHT, post.getId()) 64번째 줄
@@ -129,14 +128,24 @@ public class PostService {
 	}
 	
 	//06.04 검색기능을 추가한 화면을 만들기 위해서 새로운 기능 선언
+	
 	/** 게시글 수정 처리 */
 	// boolean은 if처리를 하기때문에 변경해준것
+	@Transactional
 	public boolean updatePost(PostVO post) {
+		attachFileVOMapper.delete(post.getId());
+		//첨부파일 정보고 관리 합니다.
+		List<AttachFileVO> listAttach = post.getListAttach();
+		if(listAttach != null && !listAttach.isEmpty()) {
+			attachFileVOMapper.insert(post.getId(), listAttach);
+		}
 		return postMapper.updatePost(post) == 1;
 	}
 
 	/** id 값으로 Post 객체 삭제 */
+	@Transactional
 	public boolean deletePostById(String id) { // int -> boolean 변경 Redirect 하기위해서 
+		attachFileVOMapper.delete(id);
 		return postMapper.deleteReplyById(id) == 1; // == 1 추가
 	}
 }

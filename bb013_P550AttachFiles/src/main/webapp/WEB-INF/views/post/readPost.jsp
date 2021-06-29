@@ -38,8 +38,10 @@
 
 <script type="text/javascript"> // El에 JSP가 만들어져야 돌아감 ↓
 	$(document).ready(function() {
+		adjustCRUDAtAttach('조회');
+		
 		<c:forEach var="attachVoInStr" items="${post.attachListInGson}" >
-			appendUploadUl(<c:out value="${attachVoInStr}" />);
+			appendUploadUl('<c:out value="${attachVoInStr}" />');
 		</c:forEach>
 		
 		//EL이 표현한 LIST 출력 양식, 그래서 첨부파일이 안보임, El은 Server에서 돌아감
