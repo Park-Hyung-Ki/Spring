@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
  // 여기에서도 생성자를 만들기 위해서
 public class Admin extends Party {
 	
-	private static List<AuthorityVO> listAuthority = new ArrayList<>();
+	private static List<AuthorityVO> listAuthority = new ArrayList<AuthorityVO>();
 	static {
 		listAuthority.add(new AuthorityVO("admin"));
 		listAuthority.add(new AuthorityVO("manager"));
@@ -34,48 +34,12 @@ public class Admin extends Party {
 	public Admin(String userId) { // super로 만들어줘야함, party가 abstract 라서
 		super(userId);
 	}
-
+	
+	@Override
 	public String toString() {
 		return "Admin [toString()=" + super.toString() + "]";
 		// Data Test를 하기위한 toString 구문.
 	}
 
-
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getPassword() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getUsername() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean isAccountNonExpired() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isAccountNonLocked() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isCredentialsNonExpired() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
 	
 }

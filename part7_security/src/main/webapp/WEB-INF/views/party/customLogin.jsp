@@ -10,7 +10,7 @@
 <body>
 	<h1>Custom Login Page</h1>
 	<h2>${error}</h2>
-	<h3>${logout}</h3>
+	<h2>${logout}</h2>
 	
 	<form method='post' action="/login" role="form">
 		<fieldset>

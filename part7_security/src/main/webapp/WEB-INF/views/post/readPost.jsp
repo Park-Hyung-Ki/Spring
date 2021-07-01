@@ -10,25 +10,31 @@
 <div class="card shadow mb-4">
 	<div class="card-body">
 		<div class="form-group">
-			<%@ include file="./include/postCommon.jsp"%>
+			<%@ include file="./include/postCommon.jsp" %>
 			<!-- 공통적 속성인 실 내용들은 postCommon.jsp를 만들어서 보내버렸음 -->
 
-			<button data-oper='modify' class="btn btn-primary">수정</button>
+			<sec:authentication property="principal" var ="customUser"/>
+			<sec:authorize access="isAuthenticated()">
+				<c:if test="${customUser.curUser.userId eq post.writer.userId}">
+					<button data-oper='modify' class="btn btn-primary">수정</button>
+				</c:if>
+			</sec:authorize>
+			
 			<button data-oper='list' class="btn btn-secondary">목록</button>
 
 			<form id='frmOper' action="/post/modifyPost" method="get">
-				<input type="hidden" name="boardId" value="${boardId}"> <input
-					type="hidden" id="postId" name="postId" value="${post.id}">
-				<input type="hidden" name="pageNumber" value="${pagination.pageNumber}"> <input type="hidden"
-					name="amount" value="${pagination.amount}"> <input
-					type="hidden" name="searching" value='${pagination.searching}'>
+				<input type="hidden" name="boardId" value="${boardId}">
+				<input type="hidden" id="postId" name="postId" value="${post.id}">
+				<input type="hidden" name="pageNumber" value="${pagination.pageNumber}">
+				<input type="hidden" name="amount" value="${pagination.amount}">
+				<input type="hidden" name="searching" value='${pagination.searching}'>
 			</form>
 			
-			<%@include file="../common/attachFileManagement.jsp"%>
+			<%@include file="../common/attachFileManagement.jsp" %>
 			
 		</div>
 
-		<%@include file="./include/replyManagement.jsp"%>
+		<%@include file="./include/replyManagement.jsp" %>
 	</div>
 </div>
 <!-- /.container-fluid -->
@@ -45,8 +51,8 @@
 		</c:forEach>
 		
 		//EL이 표현한 LIST 출력 양식, 그래서 첨부파일이 안보임, El은 Server에서 돌아감
-		
 		//postCommon에 있는 함수를 부를 것
+		
 		$("button[data-oper='modify']").on("click", function() {
 			$("#frmOper").submit();
 		});

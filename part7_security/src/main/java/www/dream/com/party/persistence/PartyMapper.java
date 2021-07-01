@@ -25,7 +25,7 @@ public interface PartyMapper { // 13. persistence package에 PartyMapper interfa
 	// Update
 	// Delete
 	
-	public UserDetails findPartyByUserId(String userId);
+	public Party findPartyByUserId(String userId);
 	//partyMapperTest.java에 있는 Code. 함수를 만들어 줄 것
 	public void insert(@Param("user") User newBie); // insert(newBie)에 대한 함수를 만들어볼건데 @Param 넣는건 늘 잘해줘야 한다.
 
@@ -35,6 +35,5 @@ public interface PartyMapper { // 13. persistence package에 PartyMapper interfa
 	// 자동으로 추가가 되지 않을때 어떻게 해야하는지
 	
 	public int setPwd(Party p);
-	
 	
 }

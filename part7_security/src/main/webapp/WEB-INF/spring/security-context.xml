@@ -14,8 +14,13 @@
 </bean>
 
 <security:http>
-	<security:form-login login-page="/party/customLogin" authentication-success-handler-ref="customAccessContorller"/>
+	<security:form-login login-page="/party/customLogin" 
+	 authentication-success-handler-ref="customAccessContorller"/> 
 	<security:access-denied-handler ref="customAccessContorller"/>
+
+	<security:logout logout-url="/party/customLogout" invalidate-session="true" delete-cookies="remember-me, JSESSION_ID"/>
+
+	<security:remember-me data-source-ref="dsHikariCP" token-validity-seconds="1800"/>
 </security:http>
 
 <security:authentication-manager>

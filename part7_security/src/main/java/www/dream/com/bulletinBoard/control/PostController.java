@@ -1,6 +1,11 @@
 package www.dream.com.bulletinBoard.control;
 
+import java.security.Principal;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +21,7 @@ import www.dream.com.bulletinBoard.model.PostVO;
 import www.dream.com.bulletinBoard.service.BoardService;
 import www.dream.com.bulletinBoard.service.PostService;
 import www.dream.com.common.dto.Criteria;
+import www.dream.com.framework.springSecurityAdapter.CustomUser;
 import www.dream.com.party.model.Party;
 import www.dream.com.party.model.User;
 
@@ -97,16 +103,26 @@ public class PostController {
 	 */
 
 	@GetMapping(value = "registerPost") // LCRUD 에서 Create 부분
-	public void registerPost(@RequestParam("boardId") int boardId, Model model) {
+	@PreAuthorize("isAuthenticated()") // 현재 사용자가 로그인 처리 했습니까?
+	public void registerPost(
+			@RequestParam("boardId") int boardId, Model model) {
 		model.addAttribute("boardId", boardId);
 	}
 
 	@PostMapping(value = "registerPost") // LCRUD 에서 Update 부분
-	public String registerPost(@RequestParam("boardId") int boardId,
+	@PreAuthorize("isAuthenticated()")
+	public String registerPost(
+			@AuthenticationPrincipal Principal principal,
+			@RequestParam("boardId") int boardId,
 		PostVO newPost, RedirectAttributes rttr) {
+		
 		newPost.parseAttachInfo();
 		BoardVO board = new BoardVO(boardId);
-		Party writer = new User("hong");
+		
+		UsernamePasswordAuthenticationToken upat = (UsernamePasswordAuthenticationToken) principal;
+		CustomUser cu = (CustomUser) upat.getPrincipal();
+		Party writer = cu.getCurUser();
+		
 		newPost.setWriter(writer);
 		postService.insert(board, newPost);
 
@@ -120,7 +136,8 @@ public class PostController {
 
 	@PostMapping(value = "modifyPost") // 수정 처리 기능을 담당 0526
 	// 이부분은 removPost와 동일하다고 봐도 무방.
-	public String openModifyPost(@RequestParam("boardId") int boardId, PostVO modifiedPost,
+	public String openModifyPost(
+			@RequestParam("boardId") int boardId, PostVO modifiedPost,
 			RedirectAttributes rttr, Criteria fromUser) {
 		// 화면에서 정보가 들어온다고 하자 boardId는 가교 역할, 그리고 밑에 오는 객체들이 정보 덩어리이다.
 		modifiedPost.parseAttachInfo(); // 수정했을시에 파일이 삭제 되는것을 방지

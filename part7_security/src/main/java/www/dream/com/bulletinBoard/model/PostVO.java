@@ -10,6 +10,7 @@ import www.dream.com.common.attachFile.model.AttachFileVO;
 import www.dream.com.framework.lengPosAnalyzer.HashTarget;
 import www.dream.com.framework.printer.ClassPrintTarget;
 import www.dream.com.framework.printer.PrintTarget;
+import www.dream.com.framework.util.StringUtil;
 import www.dream.com.framework.util.ToStringSuperHelp;
 import www.dream.com.party.model.Party;
 
@@ -54,8 +55,11 @@ public class PostVO extends ReplyVO {
 		if (listAttach == null) {
 			listAttach = new ArrayList<>();
 		}
-		for (String ai : listAttachInStringFormat) {
-			listAttach.add(AttachFileVO.fromJson(ai));
+		
+		if (listAttachInStringFormat != null) {
+			for (String ai : listAttachInStringFormat) {
+				listAttach.add(AttachFileVO.fromJson(ai));
+			}
 		}
 	}
 	

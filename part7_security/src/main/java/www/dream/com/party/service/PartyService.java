@@ -2,6 +2,7 @@ package www.dream.com.party.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import www.dream.com.framework.springSecurityAdapter.CustomUser;
 import www.dream.com.party.model.Party;
 import www.dream.com.party.persistence.PartyMapper;
 
@@ -17,7 +18,7 @@ import www.dream.com.party.persistence.PartyMapper;
 @AllArgsConstructor // 4. Allargsconstructor @ 생성
 @NoArgsConstructor
 public class PartyService implements UserDetailsService { // 1. 순서가 의미가 없어졌다. 일단은 두 가지 CommonMngVO , PartyMapper의 xml을 만들었고, 시작한다 이부분은.
-	@NonNull // 5. NonNull @도 만들어준다. 일단 이친구의 기능이뭔지 공부하기.
+	@Autowired // 5. NonNull @도 만들어준다. 일단 이친구의 기능이뭔지 공부하기.
 	private PartyMapper partyMapper; // 3. PartyMapper 객체를 받아낼 것
 
 	public List<Party> getList(){ // 6. Party List를 끌고와도 괜찮다. 왜? List를 불러오는 함수를 만들거라서
@@ -26,8 +27,8 @@ public class PartyService implements UserDetailsService { // 1. 순서가 의미
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		return partyMapper.findPartyByUserId(username);
+		Party loginParty = partyMapper.findPartyByUserId(username);
+		return loginParty == null ? null : new CustomUser(loginParty);
 	}
-	
 	
 }

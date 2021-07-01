@@ -8,18 +8,17 @@ import java.util.Date;
  */
 import java.util.List;
 
-import org.springframework.security.core.userdetails.UserDetails;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import www.dream.com.common.model.CommonMngVO;
 import www.dream.com.framework.lengPosAnalyzer.HashTarget;
 import www.dream.com.framework.printer.ClassPrintTarget;
 import www.dream.com.framework.printer.PrintTarget;
+
 @Data
 @NoArgsConstructor
 @ClassPrintTarget
-public abstract class Party extends CommonMngVO implements UserDetails { // 4. CommonMngVO를 상속받는 Party 클래스를 만들기.
+public abstract class Party extends CommonMngVO { // 4. CommonMngVO를 상속받는 Party 클래스를 만들기.
 	// 5. 이곳에 VO로 지정할 사항들 가져오기.
 	// 6. Java형식에 맞게끔 자료형 변수명 맞춰주기
 	
@@ -43,14 +42,14 @@ public abstract class Party extends CommonMngVO implements UserDetails { // 4. C
 	public void addContactPoint(ContactPoint cp) {
 		listContactPoint.add(cp);
 	}
+	
+	public abstract List<AuthorityVO> getAuthorityList();
+	
 	@Override
 	public String toString() {
 		return "Party [userId=" + userId + ", userPwd=" + userPwd + ", name=" + name + ", birthDate=" + birthDate
 				+ ", male=" + male + ", enabled=" + enabled + ", listContactPoint=" + listContactPoint
 				+ ", toString()=" + super.toString() + "]";
 	}
-	
-	public abstract List<AuthorityVO> getAuthorityList();
-	
 
 }

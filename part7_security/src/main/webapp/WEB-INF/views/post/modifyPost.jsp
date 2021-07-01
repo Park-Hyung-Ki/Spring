@@ -12,11 +12,16 @@
 		<div class="card-body">
 			<form id='frmPost' action="/post/modifyPost" method="post">
 				<%@ include file="./include/postCommon.jsp" %>
-				<%@ include file="../common/attachFileManagement.jsp"%>	
-					
-				<button type="submit" data-oper='modify' class="btn btn-primary" >수정</button>
-				<!-- 이 data-oper는 modify라는 변수를 추가해서, html에서 제공하는 element의 변수명의 data를 추가할 수 있는 장치.  -->
-				<button type="submit" data-oper='remove' class="btn btn-danger" >삭제</button>
+				<%@ include file="../common/attachFileManagement.jsp"%>
+				
+				<sec:authentication property="principal" var ="customUser"/>
+				<sec:authorize access="isAuthenticated()">
+					<c:if test="${customUser.curUser.userId eq post.writer.userId}">
+						<button type="submit" data-oper='modify' class="btn btn-primary" >수정</button>
+						<!-- 이 data-oper는 modify라는 변수를 추가해서, html에서 제공하는 element의 변수명의 data를 추가할 수 있는 장치.  -->
+						<button type="submit" data-oper='remove' class="btn btn-danger" >삭제</button>
+					</c:if>
+				</sec:authorize>	
 				<button type="submit" data-oper='list' class="btn btn-secondary">목록으로</button>
 				
 				<input id="boardId" type="hidden" name="boardId" value="${boardId}">
@@ -26,7 +31,7 @@
 				<input type="hidden" name="searching" value='${pagination.searching}'>
 				<!-- Criteria fromUser를 추가한 Data를 받아오기위해 두 개의 코드 추가 -->
 				<!-- HashTag에서는 앞선 Searching에서 사용한 요소인 keyword, type을 searching 하나로 대신함 06.07 -->
-				
+				<input type='hidden' name='${_csrf.parameterName}' value='${_csrf.token}'>
 			</form>
 			
 		</div>

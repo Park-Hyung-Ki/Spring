@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <!-- id 값으로 content를 그냥 사용하는건 위험하다. 왜냐하면 content값이 예약을 처리하는 기능이 있기에  -->
 <!-- 실 내용만 담을 postCommon.jsp -->
 <div class="form-group">
@@ -25,7 +26,16 @@
 </div>
 
 <div class="form-group">
-	<label>작성자</label> <input value="${post.writer.name}"	class="form-control" readonly>
+	<label>작성자</label>
+	 <c:choose>
+	 	<c:when test="${empty post}">
+	 		<input value= '<sec:authentication property="principal.curUser.name"/>'	class="form-control" readonly>
+	 		
+	 	</c:when>
+	 	<c:otherwise>
+	 		<input value="${post.writer.name}"	class="form-control" readonly>
+	 	</c:otherwise>
+	 </c:choose>
 </div>
 
 <!-- 05.27 새로운 속성들 추가 -->
@@ -42,6 +52,8 @@
 	<label>, 수정일 : </label>
 	<fmt:formatDate pattern="yyyy-MM-dd" value="${post.updateDate}" />
 </div>
+
+<input type='hidden' name='${_csrf.parameterName}' value='${_csrf.token}'>
 
 <script type="text/javascript">
 //$(document).ready(function() { 이게 있으면 함수가 정의?가 안된다. 

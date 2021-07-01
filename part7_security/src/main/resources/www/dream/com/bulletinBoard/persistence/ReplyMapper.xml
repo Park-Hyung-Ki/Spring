@@ -157,7 +157,7 @@
 	게시글 상세 및 댓글 상세조회가 통합으로 서비스 되고 있습니다. -->
 	<select id="findReplyById" resultMap="rmReply"> 
 	<![CDATA[ 
-		select p.*, w.name w_name, w.descrim w_descrim,
+		select p.*, w.user_id w_user_id, w.name w_name, w.descrim w_descrim, 
 		af.uuid af_uuid,
 		af.saved_folder_path af_saved_folder_path, af.pure_file_name af_pure_file_name,
 		af.multimedia_type af_multimedia_type		

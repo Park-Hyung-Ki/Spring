@@ -16,6 +16,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import www.dream.com.party.service.PartyService;
@@ -30,7 +31,6 @@ public class PartyController implements AuthenticationSuccessHandler, AccessDeni
 	@GetMapping(value="list") // 14. GetMapping @도 가져오고.
 	public void getList(Model model) { // 13.getList 함수 생성 , // 15. Model 이거 구글링해보고 
 		model.addAttribute("listParty", partyService.getList()); // 16. getlist를 불러오기위한 동작을 model에 담을것
-		System.out.println("출력이 될까?");
 	}
 	
 	@GetMapping("customLogin")
@@ -43,7 +43,20 @@ public class PartyController implements AuthenticationSuccessHandler, AccessDeni
 			model.addAttribute("logout", "로그 아웃 성공!");
 		}
 	}
+	@GetMapping("customLogout")
+	public void processLogout() {
+		
+	}
 	
+	@PostMapping("customLogout")
+	public void processLogoutPost() {
+		
+	}
+	
+	@GetMapping("showCurUser")
+	public void showCurUser() {
+		
+	}
 	/**
 	 * 로그인 성공 시 각 사용자의 권한 유형에 따라 개인화된 화면을 연동 시켜주기 위한 기능을 이곳에서 개발합니다.
 	 */
@@ -55,16 +68,23 @@ public class PartyController implements AuthenticationSuccessHandler, AccessDeni
 			roleNames.add(authority.getAuthority());
 		});
 		
+		
+		 if (roleNames.contains("manager")) {
+		 response.sendRedirect("/party/showCurUser"); return; 
+		 }
+		
+		
 		if (roleNames.contains("admin")) {
-			response.sendRedirect("/post/listBySearch/boardId=1");
+			response.sendRedirect("/post/listBySearch?boardId=1");
 			return;
 		}
 		
 		if (roleNames.contains("manager")) {
-			response.sendRedirect("/post/listBySearch/boardId=2");
+			response.sendRedirect("/post/listBySearch?boardId=2");
 			return;
 		}
-		response.sendRedirect("/post/listBySearch/boardId=3");
+		
+		response.sendRedirect("/post/listBySearch?boardId=3");
 	}
 	
 	@Override

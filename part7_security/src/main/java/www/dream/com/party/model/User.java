@@ -15,14 +15,15 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-public class User extends Party {public User(String userId) {
+public class User extends Party {
+	public User(String userId) {
 		super(userId);
 	}
 
-private static List<AuthorityVO> listAuthority = new ArrayList<>();
-	static {
-		listAuthority.add(new AuthorityVO("user"));
-	}
+	private static List<AuthorityVO> listAuthority = new ArrayList<AuthorityVO>();
+ 	static {
+ 		listAuthority.add(new AuthorityVO("user"));
+ 	}
 	
 	@Override
 	public List<AuthorityVO> getAuthorityList() {
@@ -30,41 +31,4 @@ private static List<AuthorityVO> listAuthority = new ArrayList<>();
 	}
 
 
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getPassword() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getUsername() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean isAccountNonExpired() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isAccountNonLocked() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isCredentialsNonExpired() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	
 }

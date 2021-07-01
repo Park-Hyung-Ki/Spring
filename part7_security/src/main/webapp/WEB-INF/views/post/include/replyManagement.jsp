@@ -9,8 +9,11 @@
 <div class="card-footer">
 	<div class="card-header">
 		댓글
-		<button id="btnOpenReplyModalForNew"
-			class="btn btn-primary btn-xs pull-right">댓글달기</button>
+		<sec:authorize access="isAuthenticated()">
+			<button id="btnOpenReplyModalForNew" class="btn btn-primary btn-xs pull-right">댓글달기</button>
+		</sec:authorize>
+		
+		
 	</div>
 	<div class="card-body">
 		<!-- 원글에 달린 댓글 목록 Paging으로 출력하기 -->
