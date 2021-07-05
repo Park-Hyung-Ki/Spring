@@ -94,43 +94,42 @@ function appendUploadUl(attachVoInJson) {
 					liTags += "</li>";
 			} 	  
 		}
-	
 	$("#uploadResult ul").append(liTags); //append 쓴이유  > 업로드 또하면
 }
 
-$(document).ready(function() {
-	//업로드 파일에 대한 확장자 제한하는 정규식
-	var uploadConstraintByExt = new RegExp("(.*?)\.(exe|sh|zip|alz)$");
-	//업로드 파일에 대한 최대크기를 제한
-	var uploadMaxSize = 1036870912;
-	
-	//화면이 맨 처음 로드 시 들어 있는 깨끗한 상태 기억
-	var initClearStatus = $("#uploadDiv").html();
-	
-	$("#uploadDiv").on("change", "input", function() {
-		alert("인생 내 맘 같지않아 그치?");
-		var formData = new FormData();
-		var files = $("#inFiles")[0].files;
+	$(document).ready(function() {
+		//업로드 파일에 대한 확장자 제한하는 정규식
+		var uploadConstraintByExt = new RegExp("(.*?)\.(exe|sh|zip|alz)$");
+		//업로드 파일에 대한 최대크기를 제한
+		var uploadMaxSize = 1036870912;
 		
-		for (var i = 0; i < files.length; i++) {
-			if (! checkFileConstraints(files[i].name, files[i].size))
-				return false;
-			formData.append("uploadFile", files[i]);
-		}
+		//화면이 맨 처음 로드 시 들어 있는 깨끗한 상태 기억
+		var initClearStatus = $("#uploadDiv").html();
 		
-		$.ajax({ // Json으로 나타날때 아래와 같이 처리함
-			url : "/uploadFiles/upload", 
-			processData : false,
-			contentType : false,
-			data : formData,
-			type : 'post',
-			success : function (result) {
-				showUploadedFile(result); //업로드이후 청소
-				//동적인 청소는 연동되어 있는 Event Listener까지 날아가버린다. 이에 대해서 유임방식을 채용
-				$("#uploadDiv").html(initClearStatus);
+		$("#uploadDiv").on("change", "input", function() {
+			alert("Upload가 성공하면 이 문구가 나올거야");
+			var formData = new FormData();
+			var files = $("#inFiles")[0].files;
+			
+			for (var i = 0; i < files.length; i++) {
+				if (! checkFileConstraints(files[i].name, files[i].size))
+					return false;
+				formData.append("uploadFile", files[i]);
 			}
+			
+			$.ajax({ // Json으로 나타날때 아래와 같이 처리함
+				url : "/uploadFiles/upload", 
+				processData : false,
+				contentType : false,
+				data : formData,
+				type : 'post',
+				success : function (result) {
+					showUploadedFile(result); //업로드이후 청소
+					//동적인 청소는 연동되어 있는 Event Listener까지 날아가버린다. 이에 대해서 유임방식을 채용
+					$("#uploadDiv").html(initClearStatus);
+				}
+			});
 		});
-	});
 	
 	/* $("#inFiles").change(uploadFiles(initClearStatus)); */
 	// IE11까지 고려한 보여 준 이후에 클릭하면 사라지게합니다.

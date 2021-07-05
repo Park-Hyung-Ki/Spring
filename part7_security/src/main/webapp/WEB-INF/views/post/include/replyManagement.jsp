@@ -13,7 +13,6 @@
 			<button id="btnOpenReplyModalForNew" class="btn btn-primary btn-xs pull-right">댓글달기</button>
 		</sec:authorize>
 		
-		
 	</div>
 	<div class="card-body">
 		<!-- 원글에 달린 댓글 목록 Paging으로 출력하기 -->
@@ -26,8 +25,7 @@
 </div>
 
 <!-- 댓글 입력 modal 창 -->
-<div id="modalReply" class="modal fade" tabindex="-1" role="dialog"
-	aria-labelledby="myModalLabel" aria-hidden="true">
+<div id="modalReply" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -38,18 +36,18 @@
 			<!-- End of modal-header -->
 			<div class="modal-body">
 				<div class="form-group">
-					<label>Reply</label> <input class="form-control"
-						name='replyContent' value='New Reply'>
+					<label>Reply</label>
+				 	<input class="form-control" name='replyContent' value='New Reply'>
 				</div>
 
 				<div class="form-group">
-					<label>작성자</label> <input class="form-control" name='replyer'
-						value=''>
+					<label>작성자</label>
+					<input class="form-control" name='replyer' value=''>
 				</div>
 
 				<div class="form-group">
-					<label>Reply Date</label> <input class="form-control"
-						name='replyDate' value=''>
+					<label>Reply Date</label>
+					 <input class="form-control" name='replyDate' value=''>
 				</div>
 
 			</div>
@@ -74,6 +72,15 @@
 <script src="\resources\js\util\dateFormat.js"></script>
 
 <script type="text/javascript">
+	var csrfHN = "${_csrf.headerName}";
+	var csrfTV = "${_csrf.token}";
+	
+	$(document).ajaxSend(
+		function(e, xhr){
+			xhr.setRequestHeader(csrfHN, csrfTV);
+		}
+	);
+	
 	var ulReply = $("#ulReply");
 	var postId = "${post.id}";
 	var currentPageNum = 1;
@@ -108,10 +115,22 @@
 	//replyService 모듈
 	//javascript에서 객체 만드는 방법 {속성이름 : 값}
 	//postId, reply, successCallBack, errorCallBack
-	var modalReply = $("#modalReply")
+	var modalReply = $("#modalReply");
 	var inputReplyContent = modalReply.find("input[name='replyContent']");
 	var inputReplyer = modalReply.find("input[name='replyer']");
 	var inputReplyDate= modalReply.find("input[name='replyDate']");
+	
+	var curUserName = null;
+	var curUserId = null;
+	
+	<sec:authentication property="principal" var ="customUser" />
+	
+	<sec:authorize access="isAuthenticated()" >
+		curUserName = "${customUser.curUser.name}";
+		curUserId = "${customUser.curUser.userId}";
+	</sec:authorize>
+	var csrfHN = "${_csrf.headerName}";
+	var csrfTV = "${_csrf.token}";
 	
 	// LR"CUD" 순서
 	var btnRegisterReply = $("#btnRegisterReply");
@@ -192,7 +211,6 @@
 			modalReply.data("display_target", clickedLi);
 		else 
 			modalReply.data("display_target", grandFather);
-			
 		
 		showModalForCreate();
 	});
@@ -200,6 +218,11 @@
 	function showModalForCreate() {
 		// 모달에 들어 있는 모든 내용 청소
 		modalReply.find("input").val("");
+		
+		modalReply.find("input[name='replyer']").val(curUserName);
+		
+		inputReplyer.attr("readonly" , true); //댓글창 댓글다는 사람 readOnly 처리
+		
 		//신규 댓글 달기 시에는 등록일자는 Default 처리. 따라서 보여줄 필요가 없어요
 		inputReplyDate.closest("div").hide();
 		
@@ -237,14 +260,20 @@
 					inputReplyer.attr("readonly", "readonly");
 					inputReplyDate.attr("readonly", "readonly");
 					
-					btnModifyReply.show();
-					btnRemoveReply.show();
+					//댓글 작성자와 현 사용자를 비교하여 같을 때만 활성화 시켜줄 것임, 이 부분이 훨씬더 UX적인 부분
+					if (curUserId == replyObj.writer.userId){
+						btnModifyReply.show();
+						btnRemoveReply.show();
+					} else {
+						btnModifyReply.hide();
+						btnRemoveReply.hide();
+					}
 					btnRegisterReply.hide();
 					
 					modalReply.modal("show");
 				}, 
 				function(errMsg) {
-				alert("댓글 상세 오류 : " + errMsg);
+					alert("댓글 조회 오류 : " + errMsg);
 				}
 			);
 		});
@@ -297,7 +326,6 @@
 		// replyId, successCallBack, errorCallBack
 		replyService.removeReply(
 			modalReply.data("reply_id"),
-			
 			function(delResult){
 				modalReply.modal("hide");
 				//댓글을 삭제한 경우와 대댓글을 삭제한 경우로 나눠서 작성해야합니다.

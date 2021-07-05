@@ -4,7 +4,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <%@include file="../includes/header.jsp"%>
-
 <!-- Begin Page Content -->
 <div class="container-fluid">
 
@@ -29,9 +28,17 @@
 
 <!-- End of Main Content -->
 
-
 <script type="text/javascript">
 $(document).ready(function() {
+	var csrfHN = "${_csrf.headerName}";
+	var csrfTV = "${_csrf.token}";
+	
+	$(document).ajaxSend(
+		function(e, xhr){
+			xhr.setRequestHeader(csrfHN, csrfTV);
+		}
+	);
+	
 	controlInput('신규');
 	adjustCRUDAtAttach('신규');
 	

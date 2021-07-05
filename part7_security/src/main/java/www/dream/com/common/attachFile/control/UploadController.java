@@ -1,33 +1,22 @@
 package www.dream.com.common.attachFile.control;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
-import javax.imageio.ImageIO;
-
-import org.jcodec.api.FrameGrab;
-import org.jcodec.common.model.Picture;
-import org.jcodec.scale.AWTUtil;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,12 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.google.gson.Gson;
-
-import net.coobird.thumbnailator.Thumbnailator;
 import www.dream.com.common.attachFile.model.AttachFileVO;
-import www.dream.com.common.attachFile.model.MultimediaType;
-import www.dream.com.framework.util.FileUtil;
 import www.dream.com.framework.util.StringUtil;
 
 @Controller
@@ -56,6 +40,7 @@ public class UploadController {
 		
 	}
 	// http://localhost:8091/uploadFiles/uploadByAjax 주소
+	@PreAuthorize("isAuthenticated()")
 	@PostMapping(value = "upload", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
 	public ResponseEntity<List<String>> uploadFilesByAjax(@RequestParam("uploadFile") MultipartFile[] uploadFiles) {
@@ -121,6 +106,7 @@ public class UploadController {
 		return new ResponseEntity(resource, headers, HttpStatus.OK);
 	}
 	
+	@PreAuthorize("isAuthenticated()")
 	@PostMapping(value = "deleteFile")
 	@ResponseBody
 	public ResponseEntity<String> cancelAttatch(AttachFileVO attachVo) {

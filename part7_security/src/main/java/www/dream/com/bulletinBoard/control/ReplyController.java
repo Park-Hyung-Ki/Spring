@@ -1,11 +1,15 @@
 package www.dream.com.bulletinBoard.control;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import www.dream.com.bulletinBoard.model.ReplyVO;
 import www.dream.com.bulletinBoard.service.ReplyService;
 import www.dream.com.common.dto.Criteria;
+import www.dream.com.framework.springSecurityAdapter.CustomUser;
 import www.dream.com.framework.util.ComparablePair;
 import www.dream.com.party.model.Party;
 import www.dream.com.party.model.User;
@@ -57,15 +62,20 @@ public class ReplyController {
 
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<ReplyVO> findReplyById(@PathVariable("id") String id) {
-
 		return new ResponseEntity<>(replyService.findReplyById(id), HttpStatus.OK);
 	}
 	
-
-	@PostMapping(value = "new/{originalId}", consumes = "application/json", produces = { MediaType.TEXT_PLAIN_VALUE })
+	@PreAuthorize("isAuthenticated()")
+	@PostMapping(value = "new/{originalId}",
+			consumes = "application/json",
+			produces = { MediaType.TEXT_PLAIN_VALUE })
 	public ResponseEntity<String> insertReply(@PathVariable("originalId") String originalId,
-			@RequestBody ReplyVO reply) {
-		Party writer = new User("ghost");
+			@RequestBody ReplyVO reply, @AuthenticationPrincipal Principal principal) {
+		
+		UsernamePasswordAuthenticationToken upat = (UsernamePasswordAuthenticationToken) principal;
+		CustomUser cu = (CustomUser) upat.getPrincipal();
+		Party writer = cu.getCurUser();
+		
 		reply.setWriter(writer);
 		
 		int insertCount = replyService.insertReply(originalId, reply);

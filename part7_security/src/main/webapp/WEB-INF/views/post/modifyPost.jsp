@@ -2,8 +2,8 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%@include file="../includes/header.jsp"%>
 
+<%@include file="../includes/header.jsp"%>
 <!-- Begin Page Content -->
 <div class="container-fluid">
  
@@ -26,6 +26,7 @@
 				
 				<input id="boardId" type="hidden" name="boardId" value="${boardId}">
 				<input type="hidden" name="postId" value="${post.id}">
+				<input type="hidden" name="writerId" value="${customUser.curUser.userId}">
 				<input type="hidden" name="pageNumber" value="${pagination.pageNumber}">
 				<input type="hidden" name="amount" value="${pagination.amount}">
 				<input type="hidden" name="searching" value='${pagination.searching}'>
@@ -44,6 +45,14 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
+	var csrfHN = "${_csrf.headerName}";
+	var csrfTV = "${_csrf.token}";
+	
+	$(document).ajaxSend(
+		function(e, xhr) {
+			xhr.setRequestHeader(csrfHN, csrfTV);
+		}
+	);
 	controlInput('수정');
 	adjustCRUDAtAttach('수정');
 	

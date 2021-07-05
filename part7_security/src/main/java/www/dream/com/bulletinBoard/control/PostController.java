@@ -23,7 +23,6 @@ import www.dream.com.bulletinBoard.service.PostService;
 import www.dream.com.common.dto.Criteria;
 import www.dream.com.framework.springSecurityAdapter.CustomUser;
 import www.dream.com.party.model.Party;
-import www.dream.com.party.model.User;
 
 //Post에 관한 Controller Class를 만들어 낼것. 0524 과정
 @Controller
@@ -136,9 +135,10 @@ public class PostController {
 
 	@PostMapping(value = "modifyPost") // 수정 처리 기능을 담당 0526
 	// 이부분은 removPost와 동일하다고 봐도 무방.
+	@PreAuthorize("principal.username == #writerId")
 	public String openModifyPost(
 			@RequestParam("boardId") int boardId, PostVO modifiedPost,
-			RedirectAttributes rttr, Criteria fromUser) {
+			RedirectAttributes rttr, Criteria fromUser, String writerId) {
 		// 화면에서 정보가 들어온다고 하자 boardId는 가교 역할, 그리고 밑에 오는 객체들이 정보 덩어리이다.
 		modifiedPost.parseAttachInfo(); // 수정했을시에 파일이 삭제 되는것을 방지
 		if (postService.updatePost(modifiedPost)) {
@@ -157,8 +157,9 @@ public class PostController {
 
 	// RedirectAttributes를 이용한 삭제 방법(Post방식 이용) 0525 Start
 	@PostMapping(value = "removePost") // 재요청을 할때 다시 속성을 주는 것 LCRUD : Delete
+	@PreAuthorize("principal.username == #writerId") // #:내가 받은 인자
 	public String removePost(@RequestParam("boardId") int boardId, @RequestParam("postId") String id,
-			RedirectAttributes rttr, Criteria fromUser) {
+			RedirectAttributes rttr, Criteria fromUser, String writerId) {
 		if (postService.deletePostById(id)) { // postService Class를 호출 해줘야 한다.
 			rttr.addFlashAttribute("result", "삭제처리가 성공");
 			//삭제 버튼을 눌렀을때, 삭제한 게시글이 있던 곳으로 돌아옴, 1페이지로 초기화 안됨
