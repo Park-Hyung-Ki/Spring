@@ -14,11 +14,12 @@ import www.dream.com.common.model.CommonMngVO;
 import www.dream.com.framework.lengPosAnalyzer.HashTarget;
 import www.dream.com.framework.printer.ClassPrintTarget;
 import www.dream.com.framework.printer.PrintTarget;
+import www.dream.com.hashTag.model.IHashTagOpponent;
 
 @Data
 @NoArgsConstructor
 @ClassPrintTarget
-public abstract class Party extends CommonMngVO { // 4. CommonMngVO를 상속받는 Party 클래스를 만들기.
+public abstract class Party extends CommonMngVO implements IHashTagOpponent { // 4. CommonMngVO를 상속받는 Party 클래스를 만들기.
 	// 5. 이곳에 VO로 지정할 사항들 가져오기.
 	// 6. Java형식에 맞게끔 자료형 변수명 맞춰주기
 	
@@ -37,6 +38,14 @@ public abstract class Party extends CommonMngVO { // 4. CommonMngVO를 상속받
 
 	public Party(String userId) {
 		this.userId = userId; //Party에 있는 userId 생성자 만들어주기. (0521. BoardVO, PostVO Test하기위함) 
+	}
+	
+	public String getId() {
+		return userId; // 연결고리 정보 primary key
+	}
+	
+	public String getType() {
+		return "Party";
 	}
 	
 	public void addContactPoint(ContactPoint cp) {

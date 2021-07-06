@@ -9,6 +9,8 @@
 		<id property="id" column="id"></id>
 		<result property="hashtag" column="hashtag"></result>
 		<result property="description" column="description"></result>
+		<result property="occurCnt" column="occur_cnt"></result>
+		
 	</resultMap>
 	
 	<!-- public Set<HashtagVO> findExisting(@Param("setHashTag") Set<String> setHashTag); 06.02作  -->
@@ -21,9 +23,24 @@
 			</foreach>
 	</select>
 	
+	<!-- public Set<HashtagVO> findprevUsedHashTag(@Param("opponent") IHashTagOpponent hashTagOpponent, 
+			@Param("curSearch")Set<String> curSearch); -->
+		<select id="findprevUsedHashTag" resultMap="rmHashtagVO">
+		
+		select h.id, h.hashtag, h.description, m.occur_cnt
+		  from sm_ht2StringId m, s_hashtag h
+		 where m.opponent_type = #{opponent.type}
+		   and m.opponent_id = #{opponent.id}
+		   and m.hashtag_id = h.id
+		   and h.hashtag in 
+			<foreach collection="curSearch" item="word" open="(" separator="," close=")"> 
+				#{word}
+			</foreach>
+	</select>
+	
 	<!-- public String getIds(int cnt); -->
 	<select id="getIds" resultType="string">
-		select genMultiId(#{cnt}) from dual
+		select getMultiId(#{cnt}) from dual
 	</select>
 	
 	<!-- public int createHashTag(@Param("setNewHashTag") Set<HashtagVO> newHashtag); -->
@@ -36,14 +53,34 @@
 	</insert>
 	
 	
-	<!-- public int insertMapBetweenPost(@Param("setExisting")Set<HashtagVO> setExisting, @Param("postId")String id); -->
-	<insert id="insertMapBetweenPost">
+	<!-- public int insertMapBetweenStringId(@Param("setExisting")Set<HashtagVO> setExisting,
+			@Param("opponent") IHashTagOpponent opponent); -->
+	<insert id="insertMapBetweenStringId">
 		insert all
 		<foreach collection="setExisting" item="hashtag" > <!--item=객체의 이름-->
-			into sm_ht2post(hashtag_id,	post_id, occur_cnt) 
-			values(#{hashtag.id}, #{postId}, #{hashtag.occurCnt})
+			into sm_ht2StringId(hashtag_id,	opponent_type, opponent_id, occur_cnt) 
+			values(#{hashtag.id}, #{opponent.type}, #{opponent.id}, #{hashtag.occurCnt})
 		</foreach>	
 		select * from dual
 	</insert>
+	
+	<!-- public void deleteMapBetweenStringId(@Param("opponent") IHashTagOpponent hashTagOpponent);  -->
+	<delete id="deleteMapBetweenStringId">
+		delete from sm_ht2StringId
+		where opponent_type = #{opponent.type} 
+		  and opponent_id = #{opponent.id}
+	</delete>
+	
+	<!-- public void deleteMapBetweenOpponentStringId(@Param("setExisting")Set<HashtagVO> setExisting,
+	 @Param("opponent") IHashTagOpponent hashTagOpponent); -->
+	 <delete id="deleteMapBetweenOpponentStringId">
+		delete from sm_ht2StringId
+		where opponent_type = #{opponent.type} 
+		  and opponent_id = #{opponent.id}
+		  and hashtag_id in
+			  <foreach collection="setExisting" item="obj" open="(" separator="," close=")"> 
+					#{obj.id}
+			  </foreach>
+	</delete>
 </mapper>
 

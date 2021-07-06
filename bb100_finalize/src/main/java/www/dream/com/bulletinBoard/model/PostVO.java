@@ -10,8 +10,8 @@ import www.dream.com.common.attachFile.model.AttachFileVO;
 import www.dream.com.framework.lengPosAnalyzer.HashTarget;
 import www.dream.com.framework.printer.ClassPrintTarget;
 import www.dream.com.framework.printer.PrintTarget;
-import www.dream.com.framework.util.StringUtil;
 import www.dream.com.framework.util.ToStringSuperHelp;
+import www.dream.com.hashTag.model.IHashTagOpponent;
 import www.dream.com.party.model.Party;
 
 /**
@@ -23,7 +23,7 @@ import www.dream.com.party.model.Party;
 @Data
 @NoArgsConstructor // 여기서도 생성자를 강제로 만들거기 때문에
 @ClassPrintTarget
-public class PostVO extends ReplyVO {
+public class PostVO extends ReplyVO implements IHashTagOpponent{
 	public static final String DESCRIM4POST = "post";
 
 	@HashTarget
@@ -38,6 +38,10 @@ public class PostVO extends ReplyVO {
 	public PostVO(String title, String content, Party writer) {
 		super(content, writer);
 		this.title = title;
+	}
+	
+	public String getType() {
+		return "Post";
 	}
 	
 	@PrintTarget(order=100, caption="제목", withAnchor=true)

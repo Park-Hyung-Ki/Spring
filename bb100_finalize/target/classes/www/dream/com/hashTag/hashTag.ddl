@@ -26,23 +26,29 @@ create unique index uidx_hashtag on s_hashtag(hashtag);
  
 -- 여기서 m은 n:m관계
 -- hashtag_id, post_id, occur_cnt
-create table sm_ht2post(
+create table sm_ht2StringId(
 	hashtag_id		number(9),
-	post_id			varchar2(4000),
+	opponent_type	varchar2(50),
+	opponent_id		varchar2(4000),
 	occur_cnt		number(9),
-	primary key(hashtag_id, post_id)
+	primary key(hashtag_id, opponent_type, opponent_id)
 );
 
 DB에 Query를 여러번 날리는것이 아닌 좋은 "성능"과 관계가 있다.
 
+create unique index idx_fromOpponent on sm_ht2StringId(opponent_type, opponent_id, hashtag_id);
+
+create unique index idx_fromOpponent on sm_ht2StringId(opponent_type, opponent_id, hashtag_id);
+ 
 --개인화 서비스, Personalization
-create table sm_ht2party(
+create table sm_ht2NumberId(
 	hashtag_id			number(9),
-	user_id				varchar2(10),
+	opponent_type		varchar2(10),
+	occur_id			number(9),
 	occur_cnt			number(9),
 	--최종 검색 활용 시점 ↓
-	latest_use_time		timestamp		default sysdate not null,  
-	primary key(user_id, hashtag_id)
+	latest_use_time timestamp		default sysdate not null,
+	primary key(occur_id, hashtag_id,opponent_type )
 )
 
 -- 배열 형 만들기

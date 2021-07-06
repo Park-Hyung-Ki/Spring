@@ -44,6 +44,9 @@
 		
 	<context:component-scan
 		base-package="www.dream.com.common.attachFile.service" />
+		
+	<context:component-scan
+		base-package="www.dream.com.hashTag.service" />
 	<!-- ↑ serivce Class를 만들때 같이 만들어 줘야함. -->
 	
 	<mybatis-spring:scan

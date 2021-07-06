@@ -8,6 +8,7 @@ import www.dream.com.bulletinBoard.model.BoardVO;
 import www.dream.com.bulletinBoard.model.PostVO;
 import www.dream.com.bulletinBoard.model.ReplyVO;
 import www.dream.com.common.dto.Criteria;
+import www.dream.com.party.model.Party;
 
 // PostVO -> PostMapper 작성
 public interface ReplyMapper { // 추후 Data를 가져오기 위해서 Interface -> Mapper 생성
@@ -60,5 +61,7 @@ public interface ReplyMapper { // 추후 Data를 가져오기 위해서 Interfac
 	public int insertReply(@Param("originalId") String originalId,@Param("reply") ReplyVO reply); // js에서 original이였음
 	/* 댓글 수정 처리 */
 	public int updateReply(ReplyVO reply);
+
+	public List<PostVO> getFavorite(@Param("boardId")int boardId, @Param("curUser") Party curUser);
 	
 }
